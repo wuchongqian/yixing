@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weixin.yixing.dao.WorksInfoMapper">
+  <resultMap id="BaseResultMap" type="com.weixin.yixing.entity.WorksInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="works_num" jdbcType="VARCHAR" property="worksNum" />
+    <result column="works_uuid" jdbcType="VARCHAR" property="worksUuid" />
+    <result column="works_name" jdbcType="VARCHAR" property="worksName" />
+    <result column="author_id" jdbcType="VARCHAR" property="authorId" />
+    <result column="number_of_votes" jdbcType="INTEGER" property="numberOfVotes" />
+    <result column="introduction_of_ works" jdbcType="VARCHAR" property="introductionOfWorks" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="num_of_clicks" jdbcType="INTEGER" property="numOfClicks" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="delete_tag" jdbcType="CHAR" property="deleteTag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, works_num, works_uuid, works_name, author_id, number_of_votes, "introduction_of_ works", 
+    image, num_of_clicks, category, activity_id, status, delete_tag, create_time, modify_time, 
+    memo
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from works_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByKeywordOrderByTime" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where
+    <if test="keyword != null and keyword != ''">
+    and works_num = #{keyword,jdbcType=VARCHAR} or works_name = #{keyword,jdbcType=VARCHAR}
+    </if>
+    and delete_tag = '0'
+    order by create_time desc
+  </select>
+
+  <select id="selectByKeywordOrderByVotes" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where
+    <if test="keyword != null and keyword != ''">
+      and works_num = #{keyword,jdbcType=VARCHAR} or works_name = #{keyword,jdbcType=VARCHAR}
+    </if>
+    and delete_tag = '0'
+    order by number_of_votes desc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from works_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.weixin.yixing.entity.WorksInfo">
+    insert into works_info (id, works_num, works_uuid, 
+      works_name, author_id, number_of_votes, 
+      "introduction_of_ works", image, num_of_clicks, 
+      category, activity_id, status, 
+      delete_tag, create_time, modify_time, 
+      memo)
+    values (#{id,jdbcType=INTEGER}, #{worksNum,jdbcType=VARCHAR}, #{worksUuid,jdbcType=VARCHAR}, 
+      #{worksName,jdbcType=VARCHAR}, #{authorId,jdbcType=VARCHAR}, #{numberOfVotes,jdbcType=INTEGER}, 
+      #{introductionOfWorks,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{numOfClicks,jdbcType=INTEGER}, 
+      #{category,jdbcType=INTEGER}, #{activityId,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
+      #{deleteTag,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{memo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.weixin.yixing.entity.WorksInfo">
+    insert into works_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="worksNum != null">
+        works_num,
+      </if>
+      <if test="worksUuid != null">
+        works_uuid,
+      </if>
+      <if test="worksName != null">
+        works_name,
+      </if>
+      <if test="authorId != null">
+        author_id,
+      </if>
+      <if test="numberOfVotes != null">
+        number_of_votes,
+      </if>
+      <if test="introductionOfWorks != null">
+        "introduction_of_ works",
+      </if>
+      <if test="image != null">
+        image,
+      </if>
+      <if test="numOfClicks != null">
+        num_of_clicks,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="activityId != null">
+        activity_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="deleteTag != null">
+        delete_tag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+      <if test="memo != null">
+        memo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="worksNum != null">
+        #{worksNum,jdbcType=VARCHAR},
+      </if>
+      <if test="worksUuid != null">
+        #{worksUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="worksName != null">
+        #{worksName,jdbcType=VARCHAR},
+      </if>
+      <if test="authorId != null">
+        #{authorId,jdbcType=VARCHAR},
+      </if>
+      <if test="numberOfVotes != null">
+        #{numberOfVotes,jdbcType=INTEGER},
+      </if>
+      <if test="introductionOfWorks != null">
+        #{introductionOfWorks,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null">
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="numOfClicks != null">
+        #{numOfClicks,jdbcType=INTEGER},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=INTEGER},
+      </if>
+      <if test="activityId != null">
+        #{activityId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="deleteTag != null">
+        #{deleteTag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.weixin.yixing.entity.WorksInfo">
+    update works_info
+    <set>
+      <if test="worksNum != null">
+        works_num = #{worksNum,jdbcType=VARCHAR},
+      </if>
+      <if test="worksUuid != null">
+        works_uuid = #{worksUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="worksName != null">
+        works_name = #{worksName,jdbcType=VARCHAR},
+      </if>
+      <if test="authorId != null">
+        author_id = #{authorId,jdbcType=VARCHAR},
+      </if>
+      <if test="numberOfVotes != null">
+        number_of_votes = #{numberOfVotes,jdbcType=INTEGER},
+      </if>
+      <if test="introductionOfWorks != null">
+        "introduction_of_ works" = #{introductionOfWorks,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null">
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="numOfClicks != null">
+        num_of_clicks = #{numOfClicks,jdbcType=INTEGER},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=INTEGER},
+      </if>
+      <if test="activityId != null">
+        activity_id = #{activityId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="deleteTag != null">
+        delete_tag = #{deleteTag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.weixin.yixing.entity.WorksInfo">
+    update works_info
+    set works_num = #{worksNum,jdbcType=VARCHAR},
+      works_uuid = #{worksUuid,jdbcType=VARCHAR},
+      works_name = #{worksName,jdbcType=VARCHAR},
+      author_id = #{authorId,jdbcType=VARCHAR},
+      number_of_votes = #{numberOfVotes,jdbcType=INTEGER},
+      "introduction_of_ works" = #{introductionOfWorks,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      num_of_clicks = #{numOfClicks,jdbcType=INTEGER},
+      category = #{category,jdbcType=INTEGER},
+      activity_id = #{activityId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      delete_tag = #{deleteTag,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      memo = #{memo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
