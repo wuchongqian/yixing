@@ -11,6 +11,10 @@ public interface AuthorInfoMapper {
 
     AuthorInfo selectByPrimaryKey(Integer id);
 
+    AuthorInfo selectAuthorInfoByAuthorId(String authorUuid);
+
+    int selectCountByActivityId(String activityId);
+
     int updateByPrimaryKeySelective(AuthorInfo record);
 
     int updateByPrimaryKey(AuthorInfo record);

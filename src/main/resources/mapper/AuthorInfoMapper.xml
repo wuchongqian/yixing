@@ -27,6 +27,23 @@
     from author_info
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectAuthorInfoByAuthorId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from author_info
+    where author_uuid = #{authorUuid,jdbcType=INTEGER}
+    and delete_tag = '0'
+  </select>
+
+  <select id="selectCountByActivityId" parameterType="java.lang.Integer" >
+    select
+    COUNT(activity_id)
+    from author_info
+    where activity_id = #{activityId,jdbcType=INTEGER}
+    and delete_tag = '0'
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from author_info
     where id = #{id,jdbcType=INTEGER}

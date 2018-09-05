@@ -31,6 +31,14 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectWorksInfoByWorksId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where works_uuid = #{worksUuid,jdbcType=INTEGER}
+    and delete_tag = 0
+  </select>
+
   <select id="selectByKeywordOrderByTime" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

@@ -18,6 +18,8 @@ public interface WorksInfoMapper {
 
     List<WorksList> selectByKeywordOrderByVotes(String keyword);
 
+    WorksInfo selectWorksInfoByWorksId(String worksUuid);
+
     int updateByPrimaryKeySelective(WorksInfo record);
 
     int updateByPrimaryKey(WorksInfo record);
