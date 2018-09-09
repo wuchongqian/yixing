@@ -151,7 +151,7 @@ public class WorksServiceImpl {
 
         ResultContent result=fileServiceImpl.uploadFileByBase64String(request);
 
-        if(result.getContent() == Constants.REQUEST_SUCCESS){
+        if(result.getCode() == Constants.REQUEST_SUCCESS){
             JSONObject jsonObject=new JSONObject();
             jsonObject.put("fileUuid",result.getContent());
             return new ResultContent(Constants.REQUEST_SUCCESS,Constants.SUCCESS,jsonObject);

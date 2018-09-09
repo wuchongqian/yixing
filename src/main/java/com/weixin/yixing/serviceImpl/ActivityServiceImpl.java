@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Service
 public class ActivityServiceImpl {
     private static Logger logger= LoggerFactory.getLogger(ActivityServiceImpl.class);
@@ -31,13 +29,12 @@ public class ActivityServiceImpl {
     public ResultContent addRegisterInfo(String activityId,String authorName, String phone, String worksName, String introductionOfWorks, String token) {
         logger.info("开始添加作品信息");
 
-
         //
-        WorksInfo works = new WorksInfo();
-        works.setActivityId(activityId);
-
-        works.setIntroductionOfWorks(introductionOfWorks);
-        works.setWorksName(worksName);
+//        WorksInfo works = new WorksInfo();
+//        works.setActivityId(activityId);
+//
+//        works.setIntroductionOfWorks(introductionOfWorks);
+//        works.setWorksName(worksName);
         return  null;
     }
 

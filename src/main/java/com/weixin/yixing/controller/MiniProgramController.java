@@ -44,7 +44,6 @@ public class MiniProgramController {
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-
     public ResultContent uploadFile(MultipartFile  uploadFile , String token) {
         return worksServiceImpl.uploadFile(uploadFile);
     }
