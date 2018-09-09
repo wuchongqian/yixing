@@ -10,12 +10,16 @@ import com.weixin.yixing.dao.AuthorInfoMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
 import com.weixin.yixing.entity.WorksInfo;
 import com.weixin.yixing.entity.WorksList;
+import com.weixin.yixing.entity.vo.UploadFileByStringBase64Request;
+import com.weixin.yixing.utils.ImageVerifyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -27,6 +31,9 @@ public class WorksServiceImpl {
 
     @Autowired
     private AuthorInfoMapper authorInfoMapper;
+
+    @Autowired
+    private FileServiceImpl fileServiceImpl;
 
     /**
      * 查询作品列表根据时间排序
@@ -112,6 +119,44 @@ public class WorksServiceImpl {
      * @return
      */
     public ResultContent addClicksOfWorksOnce(String worksId, String token){
+
         return null;
+    }
+
+    public ResultContent uploadFile(MultipartFile file){
+        logger.info("开始执行上传文件服务");
+
+        if(null==file){
+            return new ResultContent(Constants.REQUEST_FAILED,"文件不能为空","");
+        }
+
+        if(file.getSize()>5*1048576){
+            return new ResultContent(Constants.REQUEST_FAILED,"上传文件大小不能超过5M","");
+        }
+        String fileName = file.getOriginalFilename();
+
+        if(!ImageVerifyUtils.verifyImageName(fileName)){
+            return new ResultContent(Constants.REQUEST_FAILED,"上传文件非法，请上传正确图片","");
+        }
+        UploadFileByStringBase64Request request = new UploadFileByStringBase64Request();
+        request.setOriginalFileName(fileName);
+        byte[] data = new byte[0];
+        try {
+            data = file.getBytes();
+        } catch (IOException e) {
+            logger.info("上传文件异常");
+            e.printStackTrace();
+        }
+        request.setFileContent(new BASE64Encoder().encode(data));
+
+        ResultContent result=fileServiceImpl.uploadFileByBase64String(request);
+
+        if(result.getContent() == Constants.REQUEST_SUCCESS){
+            JSONObject jsonObject=new JSONObject();
+            jsonObject.put("fileUuid",result.getContent());
+            return new ResultContent(Constants.REQUEST_SUCCESS,Constants.SUCCESS,jsonObject);
+        }else {
+            return new ResultContent(Constants.REQUEST_FAILED,Constants.FAILED,"{}");
+        }
     }
 }

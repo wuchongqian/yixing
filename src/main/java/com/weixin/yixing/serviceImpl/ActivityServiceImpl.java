@@ -4,11 +4,13 @@ import com.commons.utils.ResultContent;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.ActivityInfoMapper;
 import com.weixin.yixing.entity.ActivityInfo;
+import com.weixin.yixing.entity.WorksInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class ActivityServiceImpl {
@@ -18,16 +20,24 @@ public class ActivityServiceImpl {
     private ActivityInfoMapper activityInfoMapper;
 
     /**
-     *
+     *参加活动，上传作品
      * @param authorName
      * @param phone
      * @param worksName
      * @param introductionOfWorks
-     * @param file
      * @param token
      * @return
      */
-    public ResultContent addRegisterInfo(String authorName, String phone, String worksName, String introductionOfWorks, MultipartFile file, String token){
+    public ResultContent addRegisterInfo(String activityId,String authorName, String phone, String worksName, String introductionOfWorks, String token) {
+        logger.info("开始添加作品信息");
+
+
+        //
+        WorksInfo works = new WorksInfo();
+        works.setActivityId(activityId);
+
+        works.setIntroductionOfWorks(introductionOfWorks);
+        works.setWorksName(worksName);
         return  null;
     }
 
