@@ -20,6 +20,8 @@ public interface WorksInfoMapper {
 
     WorksInfo selectWorksInfoByWorksId(String worksUuid);
 
+    List<WorksInfo> selectWorksInfoByActivityId(String activityId);
+
     int updateByPrimaryKeySelective(WorksInfo record);
 
     int updateByPrimaryKey(WorksInfo record);

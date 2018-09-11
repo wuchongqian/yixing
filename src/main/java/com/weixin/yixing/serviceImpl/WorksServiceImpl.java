@@ -1,5 +1,7 @@
 package com.weixin.yixing.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.commons.utils.ResultPage;
@@ -10,8 +12,10 @@ import com.weixin.yixing.dao.AuthorInfoMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
 import com.weixin.yixing.entity.WorksInfo;
 import com.weixin.yixing.entity.WorksList;
+import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import com.weixin.yixing.entity.vo.UploadFileByStringBase64Request;
 import com.weixin.yixing.utils.ImageVerifyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WorksServiceImpl {
@@ -52,7 +58,7 @@ public class WorksServiceImpl {
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("worksList", list);
 
-        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS,list,
+        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
                 page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
     }
 
@@ -73,7 +79,7 @@ public class WorksServiceImpl {
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("worksList", list);
 
-        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS,list,
+        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
                 page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
     }
 
@@ -86,7 +92,9 @@ public class WorksServiceImpl {
     public ResultContent getNumOfRegistration(String activityId, String token){
         logger.info("查询报名人数");
         int result = authorInfoMapper.selectCountByActivityId(activityId);
-        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, result);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("numOfRegistration", result);
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
 
     /**
@@ -96,7 +104,18 @@ public class WorksServiceImpl {
      * @return
      */
     public ResultContent addNumOfVotesOnce(String worksId, String token){
-        return null;
+        //查询作品得票数
+        WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+
+        WorksInfo worksInfo = new WorksInfo();
+        worksInfo.setWorksUuid(worksId);
+        worksInfo.setNumberOfVotes(works.getNumberOfVotes() + 1);
+        int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
+        if (result > 0){
+            return  new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        }else{
+            return  new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        }
     }
 
     /**
@@ -108,8 +127,44 @@ public class WorksServiceImpl {
     public ResultContent getWorksInfo(String worksId, String token){
         logger.info("开始查询作品详情");
         WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+        String imageInfo = worksInfo.getImage();
+        //获取图片URL
+        List<String> imageUrlList=new ArrayList<>();
+        if(StringUtils.isNotEmpty(imageInfo)) {
+            JSONArray jsonArray = JSON.parseArray(imageInfo);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                String imageUrl = "";
+                if (null != jsonArray.getJSONObject(i)) {
+                    String fileId = jsonArray.getJSONObject(i).getString("id");
+                    GetWidthResizedImageUrlRequest request = new GetWidthResizedImageUrlRequest();
 
-        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, worksInfo);
+                    request.setFileUuid(fileId);
+                    request.setImageWidth(500);
+                    ResultContent result = fileServiceImpl.getImageUrl(request);
+                    if (result.getCode() == Constants.REQUEST_SUCCESS) {
+                        Map<String, String> map = (Map<String, String>) result.getContent();
+                        imageUrl = map.get(imageUrl);
+                        imageUrlList.add(imageUrl);
+                    } else {
+                        logger.error("获取图片URL失败");
+                    }
+                }
+            }
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("worksNum",worksInfo.getWorksNum());
+        jsonObject.put("worksUuid",worksInfo.getWorksUuid());
+        jsonObject.put("worksName",worksInfo.getWorksName());
+        jsonObject.put("authorId",worksInfo.getAuthorId());
+        jsonObject.put("numberOfVotes",worksInfo.getNumberOfVotes());
+        jsonObject.put("introductionOfWorks",worksInfo.getIntroductionOfWorks());
+        jsonObject.put("imageUrl",imageUrlList);
+        jsonObject.put("numOfClicks",worksInfo.getNumOfClicks());
+        jsonObject.put("activityId",worksInfo.getActivityId());
+        jsonObject.put("createTime",worksInfo.getCreateTime());
+        jsonObject.put("memo",worksInfo.getMemo());
+
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
 
     /**
@@ -120,7 +175,18 @@ public class WorksServiceImpl {
      */
     public ResultContent addClicksOfWorksOnce(String worksId, String token){
 
-        return null;
+        //查询作品得票数
+        WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+
+        WorksInfo worksInfo = new WorksInfo();
+        worksInfo.setWorksUuid(worksId);
+        worksInfo.setNumOfClicks(works.getNumOfClicks() + 1);
+        int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
+        if (result > 0){
+            return  new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        }else{
+            return  new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        }
     }
 
     public ResultContent uploadFile(MultipartFile file){

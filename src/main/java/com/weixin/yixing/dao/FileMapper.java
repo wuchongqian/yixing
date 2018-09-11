@@ -2,6 +2,8 @@ package com.weixin.yixing.dao;
 
 import com.weixin.yixing.entity.File;
 
+import java.util.List;
+
 public interface FileMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -10,6 +12,8 @@ public interface FileMapper {
     int insertSelective(File record);
 
     File selectByPrimaryKey(Integer id);
+
+    List<File> selectByFileSelective(File file);
 
     int updateByPrimaryKeySelective(File record);
 

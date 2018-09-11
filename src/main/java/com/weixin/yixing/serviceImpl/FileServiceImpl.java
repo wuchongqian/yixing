@@ -1,6 +1,8 @@
 package com.weixin.yixing.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
+import com.commons.utils.StringUtils;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -10,6 +12,8 @@ import com.qcloud.cos.model.*;
 import com.qcloud.cos.region.Region;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.FileMapper;
+import com.weixin.yixing.entity.File;
+import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import com.weixin.yixing.entity.vo.UploadFileByStringBase64Request;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -49,14 +54,7 @@ public class FileServiceImpl {
         ClientConfig clientConfig = new ClientConfig(new Region(region));
         // 3 生成cos客户端
         COSClient cosClient = new COSClient(cred, clientConfig);
-        // 简单文件上传, 最大支持 5 GB, 适用于小文件上传, 建议 20M以下的文件使用该接口
-        // 大文件上传请参照 API 文档高级 API 上传
-//        File localFile = new File("src/test/resources/len5M.txt");
-        // 指定要上传到 COS 上对象键
-        // 对象键（Key）是对象在存储桶中的唯一标识。
-        // 例如，在对象的访问域名 `bucket1-1250000000.cos.ap-guangzhou.myqcloud.com/doc1/pic1.jpg` 中，对象键为 doc1/pic1.jpg,
-        // 详情参考 [对象键](https://cloud.tencent.com/document/product/436/13324)
-//        String key = "upload_single_demo.txt";
+
         //创建上传Object的Metadata
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(in.available());
@@ -82,39 +80,6 @@ public class FileServiceImpl {
 
     }
 
-    public String downloadFile(String key){
-
-        COSCredentials cred = new BasicCOSCredentials(accesskey, secretKey);
-        // 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
-        ClientConfig clientConfig = new ClientConfig(new Region(region));
-        // 3 生成cos客户端
-        COSClient cosClient = new COSClient(cred, clientConfig);
-
-        // 指定要下载到的本地路径
-//        File downFile = new File("src/test/resources/mydown.txt");
-//        // 指定要下载的文件所在的 bucket 和对象键
-//        GetObjectRequest getObjectRequest = new GetObjectRequest(bucketName, "");
-//        ObjectMetadata downObjectMeta = cosClient.getObject(getObjectRequest, downFile);
-//        if (ossBucketList.get(Constants.OSS_BUCKET_TYPE_PUBLIC_READ).equals(bucketName)) {
-//            String url = "https://" + bucketName + "." + endpoint + "/" + key;
-//            if (!StringUtils.isEmpty(style)) {
-//                url += "?x-oss-process=" + style;
-//            }
-//            return url;
-//        } else {
-            try {
-                // 设置URL过期时间为1小时
-                Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
-                GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, key, HttpMethodName.GET);
-                req.setExpiration(expiration);
-//                req.setProcess(style);
-                return cosClient.generatePresignedUrl(req).toString();
-            } catch (Exception ex) {
-                throw ex;
-            } finally {
-                cosClient.shutdown();
-            }
-    }
 
 
     public ResultContent uploadFileByBase64String(UploadFileByStringBase64Request request) {
@@ -203,6 +168,53 @@ public class FileServiceImpl {
             return "text/xml";
         }
         return "";
+    }
+
+    public ResultContent getImageUrl(GetWidthResizedImageUrlRequest request){
+        File record = new File();
+        record.setFileUuid(request.getFileUuid());
+
+        List<File> res = fileMapper.selectByFileSelective(record);
+        if(null!=res && res.size()>0) {
+//            String style = "";
+//            if (null != request.getImageWidth()&&request.getImageWidth()>0){
+//                style = "image/resize,w_"+request.getImageWidth();
+//            }
+            String url = downloadResizedImage(res.get(0).getFileOssKey(), res.get(0).getFileOssBucket());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("imageUrl", url);
+            jsonObject.put("fileUuid", request.getFileUuid());
+
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
+        } else {
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, "{}");
+        }
+    }
+
+    /**
+     * 获取图片下载地址
+     *
+     * @param key
+     * @return
+     */
+    public String downloadResizedImage(String key, String bucketName) {
+        COSCredentials cred = new BasicCOSCredentials(accesskey, secretKey);
+        ClientConfig clientConfig = new ClientConfig(new Region(region));
+        COSClient cosClient = new COSClient(cred, clientConfig);
+
+        try {
+                // 设置URL过期时间为1小时
+                Date expiration = new Date(new Date().getTime() + 3600 * 1000);
+                GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, key, HttpMethodName.GET);
+                req.setExpiration(expiration);
+
+                return cosClient.generatePresignedUrl(req).toString();
+        } catch (Exception ex) {
+                throw ex;
+        } finally {
+            cosClient.shutdown();
+        }
+
     }
 
     /**

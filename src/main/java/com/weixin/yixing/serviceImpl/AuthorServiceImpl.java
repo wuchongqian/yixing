@@ -1,5 +1,6 @@
 package com.weixin.yixing.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.AuthorInfoMapper;
@@ -35,7 +36,18 @@ public class AuthorServiceImpl {
      * @return
      */
     public ResultContent addLikeOfAuthor(String authorId, String token){
-        return null;
+        //查询作者喜欢数
+        AuthorInfo author = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
+
+        AuthorInfo authorInfo = new AuthorInfo();
+        authorInfo.setAuthorUuid(authorId);
+        authorInfo.setLike(author.getLike() + 1);
+        int result = authorInfoMapper.updateByPrimaryKeySelective(authorInfo);
+        if (result > 0){
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        }else{
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        }
     }
 
 }

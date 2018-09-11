@@ -37,6 +37,17 @@
     from works_info
     where works_uuid = #{worksUuid,jdbcType=INTEGER}
     and delete_tag = 0
+    and status = '1'
+  </select>
+
+  <select id="selectWorksInfoByActivityId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where activity_id = #{activityId,jdbcType=INTEGER}
+    and delete_tag = 0
+    order by create_time desc
+    limit 3
   </select>
 
   <select id="selectByKeywordOrderByTime" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -48,6 +59,7 @@
     and works_num = #{keyword,jdbcType=VARCHAR} or works_name = #{keyword,jdbcType=VARCHAR}
     </if>
     and delete_tag = '0'
+    and status = '1'
     order by create_time desc
   </select>
 
@@ -60,6 +72,7 @@
       and works_num = #{keyword,jdbcType=VARCHAR} or works_name = #{keyword,jdbcType=VARCHAR}
     </if>
     and delete_tag = '0'
+    and status = '1'
     order by number_of_votes desc
   </select>
 
