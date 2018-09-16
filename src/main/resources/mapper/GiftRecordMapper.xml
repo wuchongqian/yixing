@@ -119,7 +119,8 @@
     select
     <include refid="Base_Column_List" />
     from gift_record
-    where work_id = #{worksId,jdbcType=INTEGER}
+    where work_id = #{worksId,jdbcType=VARCHAR}
+    ORDER By create_time DESC
   </select>
 
 </mapper>

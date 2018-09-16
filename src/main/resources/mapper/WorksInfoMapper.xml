@@ -35,19 +35,41 @@
     select
     <include refid="Base_Column_List" />
     from works_info
-    where works_uuid = #{worksUuid,jdbcType=INTEGER}
+    where works_uuid = #{worksUuid,jdbcType=VARCHAR}
     and delete_tag = 0
-    and status = '1'
   </select>
 
   <select id="selectWorksInfoByActivityId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
-    where activity_id = #{activityId,jdbcType=INTEGER}
+    where activity_id = #{activityId,jdbcType=VARCHAR}
     and delete_tag = 0
     order by create_time desc
     limit 3
+  </select>
+
+  <select id="selectWorksLeaderBoardByActivityId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where activity_id = #{activityId,jdbcType=VARCHAR}
+    and delete_tag = 0
+    order by number_of_votes desc
+
+  </select>
+
+  <select id="selectRankingByWorksId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select u.rank
+    form
+    (select
+    <include refid="Base_Column_List" />
+    from works_info
+    where activity_id = #{activityId,jdbcType=VARCHAR}
+    and delete_tag = 0
+    order by number_of_votes desc) u
+    where u.works_uuid = #{worksUuid,jdbcType=VARCHAR}
+
   </select>
 
   <select id="selectByKeywordOrderByTime" parameterType="java.lang.Integer" resultMap="BaseResultMap">

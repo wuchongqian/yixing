@@ -11,6 +11,8 @@ public interface AuthorWorksMapper {
 
     AuthorWorks selectByPrimaryKey(Integer id);
 
+    AuthorWorks selectByAuthorId(String authorId);
+
     int updateByPrimaryKeySelective(AuthorWorks record);
 
     int updateByPrimaryKey(AuthorWorks record);

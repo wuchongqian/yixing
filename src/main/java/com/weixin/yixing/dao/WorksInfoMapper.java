@@ -14,13 +14,19 @@ public interface WorksInfoMapper {
 
     WorksInfo selectByPrimaryKey(Integer id);
 
-    List<WorksList> selectByKeywordOrderByTime(String keyword);
+    List<WorksInfo> selectByKeywordOrderByTime(String keyword);
 
-    List<WorksList> selectByKeywordOrderByVotes(String keyword);
+    List<WorksInfo> selectByKeywordOrderByVotes(String keyword);
 
     WorksInfo selectWorksInfoByWorksId(String worksUuid);
 
+//    WorksInfo selectUnReviewedWorksInfoByWorksId(String worksUuid);
+
     List<WorksInfo> selectWorksInfoByActivityId(String activityId);
+
+    List<WorksInfo> selectWorksLeaderBoardByActivityId(String activityId);
+
+    int selectRankingByWorksId(String worksId);//TODO 待验证
 
     int updateByPrimaryKeySelective(WorksInfo record);
 

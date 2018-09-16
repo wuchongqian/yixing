@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -115,5 +117,51 @@ public class ActivityServiceImpl {
         ActivityInfo result = activityInfoMapper.selectActivityInfoByActivityId(activityId);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, result);
 
+    }
+
+    /**
+     * 添加活动信息
+     * @param activityName
+     * @param content
+     * @param deadline
+     * @param token
+     * @return
+     */
+    public ResultContent addActivityInfo(String activityName, String content, String imageId, String deadline, String token){
+        logger.info("添加活动信息");
+
+        ActivityInfo activityInfo = new ActivityInfo();
+        activityInfo.setActivityId(UUID.randomUUID().toString());
+        activityInfo.setActivityName(activityName);
+        activityInfo.setIntroductionOfActivity(content);
+        activityInfo.setImage(imageId);
+        activityInfo.setCreateTime(new Date());
+
+        int result = activityInfoMapper.insertSelective(activityInfo);
+        if (result>0){
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        }else{
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        }
+    }
+
+    public ResultContent updateActivityDeadline(String activityId, String deadline, String token){
+        logger.info("添加活动信息");
+
+        ActivityInfo activityInfo = new ActivityInfo();
+        activityInfo.setActivityId(activityId);
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        try{
+            Date date = sdf.parse(deadline);
+            activityInfo.setDeadline(date);
+        }catch (ParseException pe) {
+            pe.printStackTrace();
+        }
+        int result = activityInfoMapper.updateByPrimaryKeySelective(activityInfo);
+        if (result>0){
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        }else{
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        }
     }
 }
