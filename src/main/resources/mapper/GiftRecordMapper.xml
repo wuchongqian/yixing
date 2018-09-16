@@ -114,4 +114,12 @@
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByWorksId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gift_record
+    where work_id = #{worksId,jdbcType=INTEGER}
+  </select>
+
 </mapper>

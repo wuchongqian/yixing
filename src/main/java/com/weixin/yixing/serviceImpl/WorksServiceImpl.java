@@ -9,7 +9,11 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.AuthorInfoMapper;
+import com.weixin.yixing.dao.GiftRecordMapper;
+import com.weixin.yixing.dao.TypeOfGiftMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
+import com.weixin.yixing.entity.GiftRecord;
+import com.weixin.yixing.entity.TypeOfGift;
 import com.weixin.yixing.entity.WorksInfo;
 import com.weixin.yixing.entity.WorksList;
 import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
@@ -40,6 +44,7 @@ public class WorksServiceImpl {
 
     @Autowired
     private FileServiceImpl fileServiceImpl;
+
 
     /**
      * 查询作品列表根据时间排序
@@ -156,6 +161,11 @@ public class WorksServiceImpl {
         jsonObject.put("worksUuid",worksInfo.getWorksUuid());
         jsonObject.put("worksName",worksInfo.getWorksName());
         jsonObject.put("authorId",worksInfo.getAuthorId());
+
+        //查询作品得票数
+//        GiftRecord giftRecord = giftRecordMapper.selectByWorksId(worksInfo.getWorksUuid());//根据作品ID查询礼物赠送情况
+//        TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
+//        Integer votesNum = worksInfo.getNumberOfVotes() + typeOfGift.ge;
         jsonObject.put("numberOfVotes",worksInfo.getNumberOfVotes());
         jsonObject.put("introductionOfWorks",worksInfo.getIntroductionOfWorks());
         jsonObject.put("imageUrl",imageUrlList);

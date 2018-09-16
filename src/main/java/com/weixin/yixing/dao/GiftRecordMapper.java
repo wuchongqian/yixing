@@ -10,6 +10,7 @@ public interface GiftRecordMapper {
     int insertSelective(GiftRecord record);
 
     GiftRecord selectByPrimaryKey(Integer id);
+    GiftRecord selectByWorksId(String worksId);
 
     int updateByPrimaryKeySelective(GiftRecord record);
 
