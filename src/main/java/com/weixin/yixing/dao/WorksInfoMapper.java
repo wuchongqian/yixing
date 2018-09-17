@@ -26,6 +26,8 @@ public interface WorksInfoMapper {
 
     int selectNumOfUnReviewedWorks();
 
+    int selectAllWorksStatisticData(String activityId);
+
     WorksInfo selectWorksInfoByWorksId(String worksUuid);
 
 //    WorksInfo selectUnReviewedWorksInfoByWorksId(String worksUuid);
@@ -33,6 +35,14 @@ public interface WorksInfoMapper {
     List<WorksInfo> selectWorksInfoByActivityId(String activityId);
 
     List<WorksInfo> selectWorksLeaderBoardByActivityId(String activityId);
+
+    List<WorksInfo> selectWorksInfoByAuthorId( @Param("authorId") String authorId,  @Param("activityId") String activityId);
+
+    int getSumOfVotes(String activityId);
+
+    int getSumOfVotesByAuthorId(String authorId);
+
+    int selectClicksDataByDate(@Param("currentDate") String currentDate, @Param("activityId") String activityId);
 
     int selectRankingByWorksId(String worksId);//TODO 待验证
 

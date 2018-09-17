@@ -138,6 +138,45 @@
     order by number_of_votes desc
   </select>
 
+  <select id="selectWorksInfoByAuthorId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where author_id = #{authorId,jdbcType=VARCHAR}
+    and activity_id = #{activityId,jdbcType=VARCHAR}
+    and delete_tag = '0'
+    order by create_time desc
+  </select>
+
+  <select id="selectAllWorksStatisticData"  resultType="Integer">
+    select COUNT(*)
+    from works_info
+    where activity_id = #{activityId,jdbcType=VARCHAR}
+    and delete_tag = '0'
+  </select>
+
+  <select id="getSumOfVotes"  resultType="Integer">
+    select SUM(number_of_votes)
+    from works_info
+    where activity_id = #{activityId,jdbcType=VARCHAR}
+    and delete_tag = '0'
+  </select>
+
+  <select id="getSumOfVotesByAuthorId"  resultType="Integer">
+    select SUM(number_of_votes)
+    from works_info
+    where author_id = #{authorId,jdbcType=VARCHAR}
+    and delete_tag = '0'
+  </select>
+
+  <select id="selectClicksDataByDate" resultType="Integer">
+    select SUM (num_of_clicks)
+    from works_info
+    where delete_tag = '0'
+    and activity_id = #{activityId,jdbcType=VARCHAR}
+    and STR_TO_DATE(create_time,"%Y-%m-%d") = #{currentDate, jdbcType = VARCHAR}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from works_info
     where id = #{id,jdbcType=INTEGER}
