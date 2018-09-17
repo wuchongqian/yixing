@@ -127,11 +127,18 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectActivityInfoByActivityId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectActivityInfoByActivityId"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from activity_info
     where activity_id = #{activityId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllActivityInfo"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from activity_info
+
   </select>
 
 </mapper>

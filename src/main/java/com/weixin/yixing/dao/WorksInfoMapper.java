@@ -1,7 +1,7 @@
 package com.weixin.yixing.dao;
 
 import com.weixin.yixing.entity.WorksInfo;
-import com.weixin.yixing.entity.WorksList;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,9 +14,17 @@ public interface WorksInfoMapper {
 
     WorksInfo selectByPrimaryKey(Integer id);
 
-    List<WorksInfo> selectByKeywordOrderByTime(String keyword);
+    List<WorksInfo> selectByKeywordOrderByTime(@Param("keyword") String keyword, @Param("activityId") String activityId);
 
-    List<WorksInfo> selectByKeywordOrderByVotes(String keyword);
+    List<WorksInfo> selectByKeywordOrderByTimeForPC(@Param("keyword") String keyword, @Param("activityId") String activityId);
+
+    List<WorksInfo> selectByKeywordOrderByVotes(@Param("keyword") String keyword, @Param("activityId") String activityId);
+
+    List<WorksInfo> selectByKeywordOrderByVotesForPC(@Param("keyword") String keyword, @Param("activityId") String activityId);
+
+    List<WorksInfo> selectByUnReviewedWorksForPC();
+
+    int selectNumOfUnReviewedWorks();
 
     WorksInfo selectWorksInfoByWorksId(String worksUuid);
 

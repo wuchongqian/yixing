@@ -42,8 +42,80 @@ public class WorksServiceImpl {
     private FileServiceImpl fileServiceImpl;
 
     @Autowired
-    private AuthorWorksMapper authorWorksMapper;
+    private ActivityInfoMapper activityInfoMapper;
 
+
+    /**
+     * 查询PC端作品列表根据时间排序
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @param token
+     * @return
+     */
+    public ResultPage getWorksListByCreateTimeForPC(String activityId, String keyword, String pageNum, String pageSize, String  token){
+        logger.info("开始查询PC端作品列表根据时间排序");
+
+        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+                worksInfoMapper.selectByKeywordOrderByTimeForPC(activityId, keyword));
+        List<WorksInfo> resultList = page.getResult();
+        List<WorksList> list = new ArrayList<>();
+        for (WorksInfo worksInfo:resultList){
+            WorksList worksList = new WorksList();
+            worksList.setAuthorId(worksInfo.getAuthorId());
+            AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
+            worksList.setAuthorName(authorInfo.getAuthorName());
+            worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
+            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksName(worksInfo.getWorksName());
+            worksList.setStatus(worksInfo.getStatus());
+
+            String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
+            worksList.setImage(imageListStr);
+            list.add(worksList);
+        }
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("worksList", list);
+
+        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
+                page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
+    }
+
+    /**
+     * 查询PC端作品列表根据人气排序
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @param token
+     * @return
+     */
+    public ResultPage getWorksListByVotesForPC(String activityId, String keyword, String pageNum, String pageSize, String  token){
+        logger.info("开始查询PC端作品列表根据票数排序");
+
+        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+                worksInfoMapper.selectByKeywordOrderByVotesForPC(activityId, keyword));
+        List<WorksInfo> resultList = page.getResult();
+        List<WorksList> list = new ArrayList<>();
+        for (WorksInfo worksInfo:resultList){
+            WorksList worksList = new WorksList();
+            worksList.setAuthorId(worksInfo.getAuthorId());
+            AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
+            worksList.setAuthorName(authorInfo.getAuthorName());
+            worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
+            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksName(worksInfo.getWorksName());
+            worksList.setStatus(worksInfo.getStatus());
+
+            String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
+            worksList.setImage(imageListStr);
+            list.add(worksList);
+        }
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("worksList", list);
+
+        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
+                page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
+    }
 
     /**
      * 查询作品列表根据时间排序
@@ -53,11 +125,11 @@ public class WorksServiceImpl {
      * @param token
      * @return
      */
-    public ResultPage getWorksListByCreateTime(String keyword, String pageNum, String pageSize, String  token){
+    public ResultPage getWorksListByCreateTime(String activityId, String keyword, String pageNum, String pageSize, String  token){
         logger.info("开始查询作品列表根据时间排序");
 
         Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
-                        worksInfoMapper.selectByKeywordOrderByTime(keyword));
+                        worksInfoMapper.selectByKeywordOrderByTime(activityId, keyword));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo:resultList){
@@ -66,8 +138,8 @@ public class WorksServiceImpl {
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             worksList.setAuthorName(authorInfo.getAuthorName());
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-            worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksName(worksInfo.getWorksName());
 
             String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
             worksList.setImage(imageListStr);
@@ -88,11 +160,11 @@ public class WorksServiceImpl {
      * @param token
      * @return
      */
-    public ResultPage getWorksListByVotes(String keyword, String pageNum, String pageSize, String  token){
+    public ResultPage getWorksListByVotes(String activityId, String keyword, String pageNum, String pageSize, String  token){
         logger.info("开始查询作品列表根据票数排序");
 
         Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
-                worksInfoMapper.selectByKeywordOrderByVotes(keyword));
+                worksInfoMapper.selectByKeywordOrderByVotes(activityId, keyword));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo:resultList){
@@ -101,8 +173,8 @@ public class WorksServiceImpl {
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             worksList.setAuthorName(authorInfo.getAuthorName());
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-            worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksName(worksInfo.getWorksName());
 
             String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
             worksList.setImage(imageListStr);
@@ -113,6 +185,54 @@ public class WorksServiceImpl {
 
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
                 page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
+    }
+
+    /**
+     * 查询未审核作品列表
+     * @param pageNum
+     * @param pageSize
+     * @param token
+     * @return
+     */
+    public ResultPage getUnrReviewedWorksList(String pageNum, String pageSize, String  token){
+        logger.info("开始查询未审核作品列表");
+
+        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+                worksInfoMapper.selectByUnReviewedWorksForPC());
+        List<WorksInfo> resultList = page.getResult();
+        List<WorksList> list = new ArrayList<>();
+        for (WorksInfo worksInfo:resultList){
+            WorksList worksList = new WorksList();
+            worksList.setAuthorId(worksInfo.getAuthorId());
+            AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
+            worksList.setAuthorName(authorInfo.getAuthorName());
+            worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
+            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksName(worksInfo.getWorksName());
+            worksList.setStatus("0");
+
+            String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
+            worksList.setImage(imageListStr);
+            list.add(worksList);
+        }
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("worksList", list);
+
+        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
+                page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
+    }
+
+    /**
+     * 查询未审核作品数量
+     * @param token
+     * @return
+     */
+    public ResultContent getNumOfUnReviewedWorks(String token){
+        logger.info("查询未审核作品数量");
+        int result = worksInfoMapper.selectNumOfUnReviewedWorks();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("numOfUnReviewedWorks", result);
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
 
     /**
@@ -290,6 +410,45 @@ public class WorksServiceImpl {
         }else{
             return  new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
         }
+    }
+
+    /**
+     * 查询所有参赛作品
+     * @param token
+     * @return
+     */
+    public ResultPage getAllActivityList(String pageNum, String pageSize, String token){
+        logger.info("开始查询所有参赛作品");
+
+        List<ActivityInfo> activityList = activityInfoMapper.selectAllActivityInfo();
+        List<Map<String, Object>> mapList = new ArrayList<>() ;
+        Page<WorksInfo> page = null;
+        for (ActivityInfo activityInfo: activityList){
+            page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+                    worksInfoMapper.selectWorksLeaderBoardByActivityId(activityInfo.getActivityId()));
+            Map<String, Object> map = new HashMap();
+            List<WorksInfo> resultList = page.getResult();
+            List<WorksList> list = new ArrayList<>();
+            for (WorksInfo worksInfo:resultList){
+                WorksList worksList = new WorksList();
+                worksList.setAuthorId(worksInfo.getAuthorId());
+                AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
+                worksList.setAuthorName(authorInfo.getAuthorName());
+                worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
+                worksList.setWorksId(worksInfo.getWorksNum());
+                worksList.setWorksName(worksInfo.getWorksName());
+
+                String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
+                worksList.setImage(imageListStr);
+                list.add(worksList);
+            }
+            map.put("activityName", activityInfo.getActivityName());
+            map.put("worksList", list);
+            mapList.add(map);
+        }
+
+        return  new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, mapList,
+                page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
     }
 
     private List getImageUrlList(String imageInfo){

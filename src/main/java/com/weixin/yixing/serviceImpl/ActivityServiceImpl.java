@@ -2,6 +2,9 @@ package com.weixin.yixing.serviceImpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
+import com.commons.utils.ResultPage;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.ActivityInfoMapper;
 import com.weixin.yixing.dao.AuthorInfoMapper;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -71,6 +75,7 @@ public class ActivityServiceImpl {
 
         //图片信息
         works.setImage(imageIdList);
+        works.setStatus("0");
         int worksResult = worksInfoMapper.insertSelective(works);
         if (worksResult<=0){
             return new ResultContent(Constants.REQUEST_FAILED, "新增作品信息错误", "{}");
@@ -119,6 +124,8 @@ public class ActivityServiceImpl {
 
     }
 
+
+
     /**
      * 添加活动信息
      * @param activityName
@@ -128,7 +135,7 @@ public class ActivityServiceImpl {
      * @return
      */
     public ResultContent addActivityInfo(String activityName, String content, String imageId, String deadline, String token){
-        logger.info("添加活动信息");
+        logger.info("开始添加活动信息");
 
         ActivityInfo activityInfo = new ActivityInfo();
         activityInfo.setActivityId(UUID.randomUUID().toString());
@@ -145,8 +152,15 @@ public class ActivityServiceImpl {
         }
     }
 
+    /**
+     * 修改活动截止日期
+     * @param activityId
+     * @param deadline
+     * @param token
+     * @return
+     */
     public ResultContent updateActivityDeadline(String activityId, String deadline, String token){
-        logger.info("添加活动信息");
+        logger.info("开始修改活动截止日期");
 
         ActivityInfo activityInfo = new ActivityInfo();
         activityInfo.setActivityId(activityId);

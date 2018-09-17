@@ -72,13 +72,53 @@
 
   </select>
 
+  <select id="selectByKeywordOrderByTimeForPC" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where activity_id = #{activityId,jdbcType=VARCHAR}
+    <if test="keyword != null and keyword != ''">
+      and (works_num like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%') or works_name like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%'))
+    </if>
+    and delete_tag = '0'
+    order by create_time desc
+  </select>
+
+  <select id="selectByKeywordOrderByVotesForPC" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where activity_id = #{activityId,jdbcType=VARCHAR}
+    <if test="keyword != null and keyword != ''">
+      and (works_num like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%') or works_name like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%'))
+    </if>
+    and delete_tag = '0'
+    order by number_of_votes desc
+  </select>
+
+  <select id="selectByUnReviewedWorksForPC" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from works_info
+    where status = '0'
+    and delete_tag = '0'
+    order by number_of_votes desc
+  </select>
+
+  <select id="selectNumOfUnReviewedWorks"  resultType="Integer">
+    select COUNT(*)
+    from works_info
+    where tstatus = '0'
+    and delete_tag = '0'
+  </select>
+
   <select id="selectByKeywordOrderByTime" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
-    where
+    where activity_id = #{activityId,jdbcType=VARCHAR}
     <if test="keyword != null and keyword != ''">
-    and works_num = #{keyword,jdbcType=VARCHAR} or works_name = #{keyword,jdbcType=VARCHAR}
+    and (works_num like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%') or works_name like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%'))
     </if>
     and delete_tag = '0'
     and status = '1'
@@ -89,9 +129,9 @@
     select
     <include refid="Base_Column_List" />
     from works_info
-    where
+    where activity_id = #{activityId,jdbcType=VARCHAR}
     <if test="keyword != null and keyword != ''">
-      and works_num = #{keyword,jdbcType=VARCHAR} or works_name = #{keyword,jdbcType=VARCHAR}
+      and (works_num like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%') or works_name like concat(concat('%', #{keyword,jdbcType=VARCHAR}), '%'))
     </if>
     and delete_tag = '0'
     and status = '1'
