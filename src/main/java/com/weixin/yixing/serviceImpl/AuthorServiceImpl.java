@@ -82,7 +82,7 @@ public class AuthorServiceImpl {
      * @return
      */
     public ResultContent getAuthorInfoForPC(String authorId, String token){
-        logger.info("开始查询作者详情");
+        logger.info("开始PC端查询作者详情");
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
         AuthorList author = new AuthorList();
         author.setAuthorUuid(authorInfo.getAuthorUuid());

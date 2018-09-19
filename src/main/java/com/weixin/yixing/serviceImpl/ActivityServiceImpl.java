@@ -124,8 +124,6 @@ public class ActivityServiceImpl {
 
     }
 
-
-
     /**
      * 添加活动信息
      * @param activityName
@@ -143,6 +141,12 @@ public class ActivityServiceImpl {
         activityInfo.setIntroductionOfActivity(content);
         activityInfo.setImage(imageId);
         activityInfo.setCreateTime(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try{
+            activityInfo.setDeadline(sdf.parse(deadline));
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
 
         int result = activityInfoMapper.insertSelective(activityInfo);
         if (result>0){
@@ -164,7 +168,7 @@ public class ActivityServiceImpl {
 
         ActivityInfo activityInfo = new ActivityInfo();
         activityInfo.setActivityId(activityId);
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try{
             Date date = sdf.parse(deadline);
             activityInfo.setDeadline(date);

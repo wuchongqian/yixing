@@ -2,6 +2,7 @@ package com.weixin.yixing.controller;
 
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.serviceImpl.ActivityServiceImpl;
+import com.weixin.yixing.serviceImpl.DataStatisticsServiceImpl;
 import com.weixin.yixing.serviceImpl.WorksServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@Api(value = "YiXingController", description = "小程序")
+@Api(value = "MiniProgramController", description = "上传及统计接口")
 @RestController
 public class MiniProgramController {
 
@@ -25,21 +26,9 @@ public class MiniProgramController {
     @Autowired
     private WorksServiceImpl worksServiceImpl;
 
+    @Autowired
+    private DataStatisticsServiceImpl dataStatisticsServiceImpl;
 
-    @ApiOperation(value="参加活动，上传作品", notes="参加活动，上传作品")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "authorName", value = "作者名", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "phone", value = "手机号", required = false, dataType = "String"),
-            @ApiImplicitParam(paramType = "query",name="worksName",value ="作品名",required =false,dataType = "String"),
-            @ApiImplicitParam(paramType = "query",name="introductionOfWorks",value ="作品介绍",required =false,dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "imageIdList", value = "图片ID列表：[{\"id\":\"001\"},{\"id\":\"002\"}]", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
-    })
-    @RequestMapping(value = "/addRegisterInfo", method = {RequestMethod.POST})
-    public ResultContent addRegisterInfo(String activityId, String authorName, String phone, String worksName, String introductionOfWorks,String imageIdList, String token) throws IOException{
-        return activityServiceImpl.addRegisterInfo(activityId, authorName, phone, worksName, introductionOfWorks, imageIdList, token);
-    }
 
     @ApiOperation(value="文件上传", notes="文件上传")
     @ApiImplicitParams({
@@ -49,4 +38,27 @@ public class MiniProgramController {
     public ResultContent uploadFile(MultipartFile  uploadFile , String token) {
         return worksServiceImpl.uploadFile(uploadFile);
     }
+
+    @ApiOperation(value="数据统计查询", notes="数据统计查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/getStatisticsDataInfo", method = {RequestMethod.GET})
+    public ResultContent getStatisticsDataInfo(String activityId, String token) {
+        return dataStatisticsServiceImpl.getStatisticsDataInfo(activityId, token);
+    }
+
+    @ApiOperation(value="点击量查询", notes="点击量查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "year", value = "活动ID", required = true, dataType = "Integer"),
+            @ApiImplicitParam(paramType="query", name = "month", value = "活动ID", required = true, dataType = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/getViewsDistribute", method = {RequestMethod.GET})
+    public ResultContent getViewsDistribute(String activityId, Integer year, Integer month, String token) {
+        return dataStatisticsServiceImpl.getViewsDistribute(activityId, year, month, token);
+    }
+
 }

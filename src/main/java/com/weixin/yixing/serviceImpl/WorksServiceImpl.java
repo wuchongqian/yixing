@@ -90,7 +90,7 @@ public class WorksServiceImpl {
      * @return
      */
     public ResultPage getWorksListByVotesForPC(String activityId, String keyword, String pageNum, String pageSize, String  token){
-        logger.info("开始查询PC端作品列表根据票数排序");
+        logger.info("开始查询PC端作品列表根据人气排序");
 
         Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
                 worksInfoMapper.selectByKeywordOrderByVotesForPC(activityId, keyword));
@@ -330,6 +330,14 @@ public class WorksServiceImpl {
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
 
+    /**
+     * 查询作品排行榜信息
+     * @param activityId
+     * @param pageNum
+     * @param pageSize
+     * @param token
+     * @return
+     */
     public ResultPage getWorksLeaderBoard(String activityId, String pageNum, String pageSize, String token){
         logger.info("开始查询作品排行榜信息");
 
@@ -355,7 +363,7 @@ public class WorksServiceImpl {
      * @param token
      * @return
      */
-    public ResultContent getUnReviewedWorksInfo(String worksId, String token){
+    public ResultContent updateUnReviewedWorksInfo(String worksId, String token){
         logger.info("开始审核作品");
         WorksInfo worksInfo = new WorksInfo();
         worksInfo.setWorksUuid(worksId);
