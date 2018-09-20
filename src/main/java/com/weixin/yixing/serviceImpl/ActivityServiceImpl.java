@@ -54,6 +54,10 @@ public class ActivityServiceImpl {
      */
     public ResultContent addRegisterInfo(String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList,String token) {
         logger.info("开始添加作品信息");
+        if(StringUtils.isEmpty(activityId) || StringUtils.isEmpty(authorName)||
+                StringUtils.isEmpty(phone)||StringUtils.isEmpty(worksName)||StringUtils.isEmpty(introductionOfWorks)||StringUtils.isEmpty(imageIdList)){
+            return new ResultContent(Constants.REQUEST_FAILED, "参数不能为空，请重新填写", "{}");
+        }
 
         //添加作品
         WorksInfo works = new WorksInfo();

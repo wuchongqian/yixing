@@ -33,7 +33,6 @@
     <include refid="Base_Column_List" />
     from author_info
     where author_uuid = #{authorUuid,jdbcType=VARCHAR}
-    and delete_tag = '0'
   </select>
 
   <select id="selectCountByActivityId" parameterType="java.lang.String" >

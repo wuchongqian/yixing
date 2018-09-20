@@ -20,7 +20,7 @@
     <result column="memo" jdbcType="VARCHAR" property="memo" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, works_num, works_uuid, works_name, author_id, number_of_votes, "introduction_of_works",
+    id, works_num, works_uuid, works_name, author_id, number_of_votes, introduction_of_works,
     image, num_of_clicks, category, activity_id, status, delete_tag, create_time, modify_time, 
     memo
   </sql>
@@ -31,7 +31,7 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="selectWorksInfoByWorksId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectWorksInfoByWorksId"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
