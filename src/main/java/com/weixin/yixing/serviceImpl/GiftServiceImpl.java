@@ -81,6 +81,7 @@ public class GiftServiceImpl {
         Page<GiftRecord> page=PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->giftRecordMapper.selectByWorksId(worksId));
         List<GiftRecord> giftRecords = page.getResult();
         List<Map<String, Object>> giftTrackList = new ArrayList<>();
+        Integer sum = 0;
         if(giftRecords.size()> 0){
             for (GiftRecord giftRecord: giftRecords){
                 Map<String, Object> map = new HashMap();
@@ -88,14 +89,14 @@ public class GiftServiceImpl {
                 TypeOfGift typeOfGift =typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
                 map.put("giftName",typeOfGift.getTypeName());
                 map.put("voteOfGift",typeOfGift.getVoteOfGift());
-
+                sum = sum + typeOfGift.getVoteOfGift();
                 giftTrackList.add(map);
             }
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("giftTrackList",giftTrackList);
         WorksInfo  worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
-        jsonObject.put("vote",worksInfo.getNumberOfVotes());
+        jsonObject.put("vote",sum);
 
         return new ResultPage(ResultContent.CODE_SUCCESS, Constants.SUCCESS, jsonObject,
                 page.getPageSize(), page.getPages(), page.getPageNum(), (int) page.getTotal());

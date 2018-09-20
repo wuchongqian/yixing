@@ -35,12 +35,18 @@
     where author_uuid = #{authorUuid,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectCountByActivityId" parameterType="java.lang.String" >
+  <select id="selectCountByActivityId" parameterType="java.lang.String" resultType="Integer">
     select
-    COUNT(activity_id)
+    COUNT(*)
     from author_info
     where activity_id = #{activityId,jdbcType=VARCHAR}
-    and delete_tag = '0'
+  </select>
+
+  <select id="selectAuthorInfoByPhone"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from author_info
+    where phone = #{phone,jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -153,9 +159,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.weixin.yixing.entity.AuthorInfo">
     update author_info
     <set>
-      <if test="authorUuid != null">
-        author_uuid = #{authorUuid,jdbcType=VARCHAR},
-      </if>
       <if test="authorName != null">
         author_name = #{authorName,jdbcType=VARCHAR},
       </if>
@@ -193,7 +196,7 @@
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where  author_uuid = #{authorUuid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.weixin.yixing.entity.AuthorInfo">
     update author_info

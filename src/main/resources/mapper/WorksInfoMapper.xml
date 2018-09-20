@@ -84,7 +84,7 @@
     order by create_time desc
   </select>
 
-  <select id="selectByKeywordOrderByVotesForPC" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByKeywordOrderByVotesForPC"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
@@ -138,7 +138,7 @@
     order by number_of_votes desc
   </select>
 
-  <select id="selectWorksInfoByAuthorId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectWorksInfoByAuthorId" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
@@ -169,8 +169,9 @@
     and delete_tag = '0'
   </select>
 
-  <select id="selectClicksDataByDate" resultType="Integer">
-    select SUM (num_of_clicks)
+  <select id="selectClicksDataByDate" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
     from works_info
     where delete_tag = '0'
     and activity_id = #{activityId,jdbcType=VARCHAR}
@@ -304,9 +305,6 @@
       <if test="worksNum != null">
         works_num = #{worksNum,jdbcType=VARCHAR},
       </if>
-      <if test="worksUuid != null">
-        works_uuid = #{worksUuid,jdbcType=VARCHAR},
-      </if>
       <if test="worksName != null">
         works_name = #{worksName,jdbcType=VARCHAR},
       </if>
@@ -347,7 +345,7 @@
         memo = #{memo,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where works_uuid = #{worksUuid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.weixin.yixing.entity.WorksInfo">
     update works_info

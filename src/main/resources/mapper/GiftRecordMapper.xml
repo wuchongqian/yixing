@@ -115,7 +115,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectByWorksId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByWorksId"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from gift_record

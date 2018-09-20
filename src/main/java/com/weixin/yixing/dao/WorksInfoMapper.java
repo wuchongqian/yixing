@@ -15,13 +15,13 @@ public interface WorksInfoMapper {
 
     WorksInfo selectByPrimaryKey(Integer id);
 
-    List<WorksInfo> selectByKeywordOrderByTime(@Param("keyword") String keyword, @Param("activityId") String activityId);
+    List<WorksInfo> selectByKeywordOrderByTime(Map<String, Object> map);
 
-    List<WorksInfo> selectByKeywordOrderByTimeForPC(@Param("keyword") String keyword, @Param("activityId") String activityId);
+    List<WorksInfo> selectByKeywordOrderByTimeForPC(Map<String, Object> map);
 
-    List<WorksInfo> selectByKeywordOrderByVotes(@Param("keyword") String keyword, @Param("activityId") String activityId);
+    List<WorksInfo> selectByKeywordOrderByVotes(Map<String, Object> map);
 
-    List<WorksInfo> selectByKeywordOrderByVotesForPC(@Param("keyword") String keyword, @Param("activityId") String activityId);
+    List<WorksInfo> selectByKeywordOrderByVotesForPC(Map<String, Object> map);
 
     List<WorksInfo> selectByUnReviewedWorksForPC();
 
@@ -37,13 +37,13 @@ public interface WorksInfoMapper {
 
     List<WorksInfo> selectWorksLeaderBoardByActivityId(String activityId);
 
-    List<WorksInfo> selectWorksInfoByAuthorId( @Param("authorId") String authorId,  @Param("activityId") String activityId);
+    List<WorksInfo> selectWorksInfoByAuthorId(Map<String, Object>map);
 
     int getSumOfVotes(String activityId);
 
     int getSumOfVotesByAuthorId(String authorId);
 
-    int selectClicksDataByDate(@Param("currentDate") String currentDate, @Param("activityId") String activityId);
+    List<WorksInfo> selectClicksDataByDate(Map<String, Object>map);
 
     int selectRankingByWorksId(Map<String, String> map);//TODO 待验证
 

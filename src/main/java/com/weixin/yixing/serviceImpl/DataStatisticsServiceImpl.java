@@ -5,6 +5,7 @@ import com.commons.utils.ResultContent;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.AuthorInfoMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
+import com.weixin.yixing.entity.WorksInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class DataStatisticsServiceImpl {
      * @param token
      * @return
      */
+    /*TODO 逻辑错误*/
     public ResultContent getViewsDistribute(String activityId, Integer year, Integer month, String token) {
         logger.info("开始进行点击量查询");
         Calendar calendar = Calendar.getInstance();
@@ -66,9 +68,12 @@ public class DataStatisticsServiceImpl {
             JSONObject jsonObject = new JSONObject();
             calendar.add(Calendar.DATE, -i);
             String dataStr = sdf.format(calendar.getTime());
+            Map<String, Object> map = new HashMap<>();
+            map.put("activityId",activityId);
+            map.put("currentDate",dataStr);
 
-            Integer clickNum = worksInfoMapper.selectClicksDataByDate(dataStr, activityId);
-            jsonObject.put("clickNum", clickNum);
+            List<WorksInfo> worksInfoList = worksInfoMapper.selectClicksDataByDate(map);//TODO 计算clickNum
+            jsonObject.put("clickNum", 0);
             jsonObject.put("date", dataStr);
             list.add(jsonObject);
         }

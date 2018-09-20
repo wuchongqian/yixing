@@ -59,7 +59,10 @@ public class AuthorServiceImpl {
         author.setSumOfVotes(sum.toString());
         List<JSONObject>worksList = new ArrayList<>();
         //获取作者作品列表
-        List<WorksInfo> worksInfoList= worksInfoMapper.selectWorksInfoByAuthorId(authorId, activityId);
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("activityId",activityId);
+        map1.put("authorId",authorId);
+        List<WorksInfo> worksInfoList= worksInfoMapper.selectWorksInfoByAuthorId(map1);
         for (WorksInfo worksInfo: worksInfoList){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("numOfVotes", worksInfo.getNumberOfVotes());
@@ -93,11 +96,14 @@ public class AuthorServiceImpl {
         Integer sum = worksInfoMapper.getSumOfVotesByAuthorId(authorId);
         author.setSumOfVotes(sum.toString());
         List<Map<String, Object>>mapList = new ArrayList<>();
-        List<AuthorInfo> authorList = authorInfoMapper.selectAuthorInfoByPhone(authorId);
+        List<AuthorInfo> authorList = authorInfoMapper.selectAuthorInfoByPhone(authorInfo.getPhone());
         for(AuthorInfo author1:authorList){
             //获取作者作品列表
             String activityId = author1.getActivityId();
-            List<WorksInfo> worksInfoList= worksInfoMapper.selectWorksInfoByAuthorId(authorId, activityId);
+            Map<String, Object> map1 = new HashMap<>();
+            map1.put("activityId",activityId);
+            map1.put("authorId",authorId);
+            List<WorksInfo> worksInfoList= worksInfoMapper.selectWorksInfoByAuthorId(map1);
             Map<String, Object>map = new HashMap();
             List<JSONObject>worksList = new ArrayList<>();
             map.put("activityId", activityId);
@@ -119,7 +125,7 @@ public class AuthorServiceImpl {
         }
 
         author.setWorksList(mapList);
-        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, authorInfo);
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, author);
     }
 
     /**
@@ -159,7 +165,7 @@ public class AuthorServiceImpl {
                     ResultContent result = fileServiceImpl.getImageUrl(request);
                     if (result.getCode() == Constants.REQUEST_SUCCESS) {
                         Map<String, String> map = (Map<String, String>) result.getContent();
-                        imageUrl = map.get(imageUrl);
+                        imageUrl = map.get("imageUrl");
                         imageUrlList.add(imageUrl);
                     } else {
                         logger.error("获取图片URL失败");

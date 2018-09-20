@@ -23,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class WorksServiceImpl {
@@ -56,9 +53,11 @@ public class WorksServiceImpl {
      */
     public ResultPage getWorksListByCreateTimeForPC(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询PC端作品列表根据时间排序");
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("activityId",activityId);
+        map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
-                worksInfoMapper.selectByKeywordOrderByTimeForPC(activityId, keyword));
+                worksInfoMapper.selectByKeywordOrderByTimeForPC(map));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -93,9 +92,11 @@ public class WorksServiceImpl {
      */
     public ResultPage getWorksListByVotesForPC(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询PC端作品列表根据人气排序");
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("activityId",activityId);
+        map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
-                worksInfoMapper.selectByKeywordOrderByVotesForPC(activityId, keyword));
+                worksInfoMapper.selectByKeywordOrderByVotesForPC(map));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -130,9 +131,11 @@ public class WorksServiceImpl {
      */
     public ResultPage getWorksListByCreateTime(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询作品列表根据时间排序");
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("activityId",activityId);
+        map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
-                worksInfoMapper.selectByKeywordOrderByTime(activityId, keyword));
+                worksInfoMapper.selectByKeywordOrderByTime(map));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -166,9 +169,11 @@ public class WorksServiceImpl {
      */
     public ResultPage getWorksListByVotes(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询作品列表根据票数排序");
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("activityId",activityId);
+        map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
-                worksInfoMapper.selectByKeywordOrderByVotes(activityId, keyword));
+                worksInfoMapper.selectByKeywordOrderByVotes(map));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -264,12 +269,14 @@ public class WorksServiceImpl {
      * @return
      */
     public ResultContent addNumOfVotesOnce(String worksId, String token) {
+        logger.info("开始投票");
         //查询作品得票数
         WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
 
         WorksInfo worksInfo = new WorksInfo();
         worksInfo.setWorksUuid(worksId);
         worksInfo.setNumberOfVotes(works.getNumberOfVotes() + 1);
+        worksInfo.setModifyTime(new Date());
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
         if (result > 0) {
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
