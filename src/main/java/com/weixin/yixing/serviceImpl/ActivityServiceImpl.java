@@ -62,7 +62,11 @@ public class ActivityServiceImpl {
         String authorUuid = UUID.randomUUID().toString();
         works.setWorksUuid(worksUuid);
         works.setIntroductionOfWorks(introductionOfWorks);
-        works.setWorksName(worksName);
+        if (StringUtils.isEmpty(worksName)) {
+            works.setWorksName("");
+        }else{
+            works.setWorksName(worksName);
+        }
 
         List<WorksInfo> list= worksInfoMapper.selectWorksInfoByActivityId(activityId);
         String worksNo = "";
