@@ -61,7 +61,7 @@
 
   <select id="selectRankingByWorksId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select u.rank
-    form
+    from
     (select
     number_of_votes
     from works_info
@@ -96,7 +96,7 @@
     order by number_of_votes desc
   </select>
 
-  <select id="selectByUnReviewedWorksForPC" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByUnReviewedWorksForPC"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
@@ -108,7 +108,7 @@
   <select id="selectNumOfUnReviewedWorks"  resultType="Integer">
     select COUNT(*)
     from works_info
-    where tstatus = '0'
+    where status = '0'
     and delete_tag = '0'
   </select>
 

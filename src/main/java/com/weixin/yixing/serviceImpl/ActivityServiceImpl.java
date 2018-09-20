@@ -72,8 +72,10 @@ public class ActivityServiceImpl {
         if(StringUtils.isEmpty(imageIdList)){
             return new ResultContent(Constants.REQUEST_FAILED, "imageIdList参数不能为空，请重新填写", "{}");
         }
-
-
+//        List<AuthorInfo> authors = authorInfoMapper.selectAuthorInfoByPhone(phone);
+//        if(authors.size()>0){
+//
+//        }
         //添加作品
         WorksInfo works = new WorksInfo();
         works.setActivityId(activityId);

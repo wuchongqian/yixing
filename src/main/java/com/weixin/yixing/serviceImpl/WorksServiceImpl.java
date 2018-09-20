@@ -333,7 +333,10 @@ public class WorksServiceImpl {
 
         //查询作品名次
         //TODO 待验证
-        int ranking = worksInfoMapper.selectRankingByWorksId(worksId);
+        Map<String, String > map = new HashMap<>();
+        map.put("WorksId", worksId);
+        map.put("activityId", worksInfo.getActivityId());
+        int ranking = worksInfoMapper.selectRankingByWorksId(map);
         jsonObject.put("ranking", ranking);
 
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);

@@ -4,6 +4,7 @@ import com.weixin.yixing.entity.WorksInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface WorksInfoMapper {
     int deleteByPrimaryKey(Integer id);
@@ -44,7 +45,7 @@ public interface WorksInfoMapper {
 
     int selectClicksDataByDate(@Param("currentDate") String currentDate, @Param("activityId") String activityId);
 
-    int selectRankingByWorksId(String worksId);//TODO 待验证
+    int selectRankingByWorksId(Map<String, String> map);//TODO 待验证
 
     int updateByPrimaryKeySelective(WorksInfo record);
 
