@@ -304,7 +304,7 @@ public class WorksServiceImpl {
                     ResultContent result = fileServiceImpl.getImageUrl(request);
                     if (result.getCode() == Constants.REQUEST_SUCCESS) {
                         Map<String, String> map = (Map<String, String>) result.getContent();
-                        imageUrl = map.get(imageUrl);
+                        imageUrl = map.get("imageUrl");
                         imageUrlList.add(imageUrl);
                     } else {
                         logger.error("获取图片URL失败");
@@ -336,8 +336,8 @@ public class WorksServiceImpl {
         Map<String, String > map = new HashMap<>();
         map.put("WorksId", worksId);
         map.put("activityId", worksInfo.getActivityId());
-        int ranking = worksInfoMapper.selectRankingByWorksId(map);
-        jsonObject.put("ranking", ranking);
+//        int ranking = worksInfoMapper.selectRankingByWorksId(map);
+//        jsonObject.put("ranking", ranking);
 
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
@@ -495,7 +495,7 @@ public class WorksServiceImpl {
                     ResultContent result = fileServiceImpl.getImageUrl(request);
                     if (result.getCode() == Constants.REQUEST_SUCCESS) {
                         Map<String, String> map = (Map<String, String>) result.getContent();
-                        imageUrl = map.get(imageUrl);
+                        imageUrl = map.get("imageUrl");
                         imageUrlList.add(imageUrl);
                     } else {
                         logger.error("获取图片URL失败");

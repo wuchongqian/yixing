@@ -60,7 +60,7 @@
   </select>
 
   <select id="selectRankingByWorksId" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select u.rank
+    select u.row_number()
     from
     (select
     number_of_votes
