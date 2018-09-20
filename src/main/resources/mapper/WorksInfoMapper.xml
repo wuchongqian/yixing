@@ -63,7 +63,7 @@
     select u.rank
     form
     (select
-    <include refid="Base_Column_List" />
+    number_of_votes
     from works_info
     where activity_id = #{activityId,jdbcType=VARCHAR}
     and delete_tag = 0
