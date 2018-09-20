@@ -137,7 +137,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
-    @RequestMapping(value = "/updateUnReviewedWorksInfo", method = {RequestMethod.GET})
+    @RequestMapping(value = "/updateUnReviewedWorksInfo", method = {RequestMethod.POST})
     public ResultContent updateUnReviewedWorksInfo(String worksId, String token) {
         return worksServiceImpl.updateUnReviewedWorksInfo(worksId, token);
     }
@@ -149,7 +149,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "numOfClicks", value = "作品点击量", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
-    @RequestMapping(value = "/updateNumOfVotes", method = {RequestMethod.GET})
+    @RequestMapping(value = "/updateNumOfVotes", method = {RequestMethod.POST})
     public ResultContent updateNumOfVotes(String worksId, String numOfVotes,String numOfClicks,  String token) {
         return worksServiceImpl.updateNumOfVotes(worksId, numOfVotes, numOfClicks, token);
     }
@@ -159,15 +159,15 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
-    @RequestMapping(value = "/addClicksOfWorksOnce", method = {RequestMethod.GET})
+    @RequestMapping(value = "/addClicksOfWorksOnce", method = {RequestMethod.POST})
     public ResultContent addClicksOfWorksOnce(String worksId, String token) {
         return worksServiceImpl.addClicksOfWorksOnce(worksId, token);
     }
 
     @ApiOperation(value="查询所有参赛作品", notes="查询所有参赛作品")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "页码，默认1", required = true, dataType = "int", defaultValue = "1"),
-            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
+            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "页码，默认1", required = true, dataType = "String", defaultValue = "1"),
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "String", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
     @RequestMapping(value = "/getAllActivityList", method = {RequestMethod.GET})

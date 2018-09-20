@@ -113,7 +113,7 @@
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where activity_id = #{activityId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.weixin.yixing.entity.ActivityInfo">
     update activity_info

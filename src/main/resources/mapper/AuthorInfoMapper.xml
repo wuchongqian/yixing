@@ -8,8 +8,8 @@
     <result column="age" jdbcType="INTEGER" property="age" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="like" jdbcType="INTEGER" property="like" />
-    <result column="introduction_of_ author" jdbcType="VARCHAR" property="introductionOfAuthor" />
+    <result column="likes" jdbcType="INTEGER" property="likes" />
+    <result column="introduction_of_author" jdbcType="VARCHAR" property="introductionOfAuthor" />
     <result column="activity_id" jdbcType="VARCHAR" property="activityId" />
     <result column="wechat_open_id" jdbcType="VARCHAR" property="wechatOpenId" />
     <result column="gender" jdbcType="CHAR" property="gender" />
@@ -18,7 +18,7 @@
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, author_uuid, author_name, age, phone, email, like, "introduction_of_ author", 
+    id, author_uuid, author_name, age, phone, email, likes, introduction_of_author,
     activity_id, wechat_open_id, gender, delete_tag, create_time, modify_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -28,19 +28,19 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="selectAuthorInfoByAuthorId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectAuthorInfoByAuthorId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from author_info
-    where author_uuid = #{authorUuid,jdbcType=INTEGER}
+    where author_uuid = #{authorUuid,jdbcType=VARCHAR}
     and delete_tag = '0'
   </select>
 
-  <select id="selectCountByActivityId" parameterType="java.lang.Integer" >
+  <select id="selectCountByActivityId" parameterType="java.lang.String" >
     select
     COUNT(activity_id)
     from author_info
-    where activity_id = #{activityId,jdbcType=INTEGER}
+    where activity_id = #{activityId,jdbcType=VARCHAR}
     and delete_tag = '0'
   </select>
 
@@ -51,12 +51,12 @@
   <insert id="insert" parameterType="com.weixin.yixing.entity.AuthorInfo">
     insert into author_info (id, author_uuid, author_name, 
       age, phone, email, 
-      like, "introduction_of_ author", activity_id, 
+      likes, introduction_of_author, activity_id,
       wechat_open_id, gender, delete_tag, 
       create_time, modify_time)
     values (#{id,jdbcType=INTEGER}, #{authorUuid,jdbcType=VARCHAR}, #{authorName,jdbcType=VARCHAR}, 
       #{age,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{like,jdbcType=INTEGER}, #{introductionOfAuthor,jdbcType=VARCHAR}, #{activityId,jdbcType=VARCHAR}, 
+      #{likes,jdbcType=INTEGER}, #{introductionOfAuthor,jdbcType=VARCHAR}, #{activityId,jdbcType=VARCHAR},
       #{wechatOpenId,jdbcType=VARCHAR}, #{gender,jdbcType=CHAR}, #{deleteTag,jdbcType=CHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
@@ -81,11 +81,11 @@
       <if test="email != null">
         email,
       </if>
-      <if test="like != null">
-        like,
+      <if test="likes != null">
+        likes,
       </if>
       <if test="introductionOfAuthor != null">
-        "introduction_of_ author",
+        introduction_of_author,
       </if>
       <if test="activityId != null">
         activity_id,
@@ -125,8 +125,8 @@
       <if test="email != null">
         #{email,jdbcType=VARCHAR},
       </if>
-      <if test="like != null">
-        #{like,jdbcType=INTEGER},
+      <if test="likes != null">
+        #{likes,jdbcType=INTEGER},
       </if>
       <if test="introductionOfAuthor != null">
         #{introductionOfAuthor,jdbcType=VARCHAR},
@@ -169,11 +169,11 @@
       <if test="email != null">
         email = #{email,jdbcType=VARCHAR},
       </if>
-      <if test="like != null">
-        like = #{like,jdbcType=INTEGER},
+      <if test="likes != null">
+        likes = #{likes,jdbcType=INTEGER},
       </if>
       <if test="introductionOfAuthor != null">
-        "introduction_of_ author" = #{introductionOfAuthor,jdbcType=VARCHAR},
+        introduction_of_author = #{introductionOfAuthor,jdbcType=VARCHAR},
       </if>
       <if test="activityId != null">
         activity_id = #{activityId,jdbcType=VARCHAR},
@@ -203,8 +203,8 @@
       age = #{age,jdbcType=INTEGER},
       phone = #{phone,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
-      like = #{like,jdbcType=INTEGER},
-      "introduction_of_ author" = #{introductionOfAuthor,jdbcType=VARCHAR},
+      likes = #{likes,jdbcType=INTEGER},
+      introduction_of_author = #{introductionOfAuthor,jdbcType=VARCHAR},
       activity_id = #{activityId,jdbcType=VARCHAR},
       wechat_open_id = #{wechatOpenId,jdbcType=VARCHAR},
       gender = #{gender,jdbcType=CHAR},

@@ -30,7 +30,7 @@ import java.util.Map;
 
 @Service
 public class WorksServiceImpl {
-    private static Logger logger= LoggerFactory.getLogger(WorksServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(WorksServiceImpl.class);
 
     @Autowired
     private WorksInfoMapper worksInfoMapper;
@@ -47,20 +47,21 @@ public class WorksServiceImpl {
 
     /**
      * 查询PC端作品列表根据时间排序
+     *
      * @param keyword
      * @param pageNum
      * @param pageSize
      * @param token
      * @return
      */
-    public ResultPage getWorksListByCreateTimeForPC(String activityId, String keyword, String pageNum, String pageSize, String  token){
+    public ResultPage getWorksListByCreateTimeForPC(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询PC端作品列表根据时间排序");
 
-        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+        Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByTimeForPC(activityId, keyword));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
-        for (WorksInfo worksInfo:resultList){
+        for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
@@ -74,7 +75,7 @@ public class WorksServiceImpl {
             worksList.setImage(imageListStr);
             list.add(worksList);
         }
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put("worksList", list);
 
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
@@ -83,20 +84,21 @@ public class WorksServiceImpl {
 
     /**
      * 查询PC端作品列表根据人气排序
+     *
      * @param keyword
      * @param pageNum
      * @param pageSize
      * @param token
      * @return
      */
-    public ResultPage getWorksListByVotesForPC(String activityId, String keyword, String pageNum, String pageSize, String  token){
+    public ResultPage getWorksListByVotesForPC(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询PC端作品列表根据人气排序");
 
-        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+        Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByVotesForPC(activityId, keyword));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
-        for (WorksInfo worksInfo:resultList){
+        for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
@@ -110,7 +112,7 @@ public class WorksServiceImpl {
             worksList.setImage(imageListStr);
             list.add(worksList);
         }
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put("worksList", list);
 
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
@@ -119,20 +121,21 @@ public class WorksServiceImpl {
 
     /**
      * 查询作品列表根据时间排序
+     *
      * @param keyword
      * @param pageNum
      * @param pageSize
      * @param token
      * @return
      */
-    public ResultPage getWorksListByCreateTime(String activityId, String keyword, String pageNum, String pageSize, String  token){
+    public ResultPage getWorksListByCreateTime(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询作品列表根据时间排序");
 
-        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
-                        worksInfoMapper.selectByKeywordOrderByTime(activityId, keyword));
+        Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
+                worksInfoMapper.selectByKeywordOrderByTime(activityId, keyword));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
-        for (WorksInfo worksInfo:resultList){
+        for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
@@ -145,7 +148,7 @@ public class WorksServiceImpl {
             worksList.setImage(imageListStr);
             list.add(worksList);
         }
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put("worksList", list);
 
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
@@ -153,21 +156,22 @@ public class WorksServiceImpl {
     }
 
     /**
-     *查询作品列表根据票数排序
+     * 查询作品列表根据票数排序
+     *
      * @param keyword
      * @param pageNum
      * @param pageSize
      * @param token
      * @return
      */
-    public ResultPage getWorksListByVotes(String activityId, String keyword, String pageNum, String pageSize, String  token){
+    public ResultPage getWorksListByVotes(String activityId, String keyword, String pageNum, String pageSize, String token) {
         logger.info("开始查询作品列表根据票数排序");
 
-        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+        Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByVotes(activityId, keyword));
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
-        for (WorksInfo worksInfo:resultList){
+        for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
@@ -180,7 +184,7 @@ public class WorksServiceImpl {
             worksList.setImage(imageListStr);
             list.add(worksList);
         }
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put("worksList", list);
 
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
@@ -189,19 +193,20 @@ public class WorksServiceImpl {
 
     /**
      * 查询未审核作品列表
+     *
      * @param pageNum
      * @param pageSize
      * @param token
      * @return
      */
-    public ResultPage getUnrReviewedWorksList(String pageNum, String pageSize, String  token){
+    public ResultPage getUnrReviewedWorksList(String pageNum, String pageSize, String token) {
         logger.info("开始查询未审核作品列表");
 
-        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+        Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByUnReviewedWorksForPC());
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
-        for (WorksInfo worksInfo:resultList){
+        for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
@@ -215,7 +220,7 @@ public class WorksServiceImpl {
             worksList.setImage(imageListStr);
             list.add(worksList);
         }
-        JSONObject jsonObject=new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put("worksList", list);
 
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject,
@@ -224,10 +229,11 @@ public class WorksServiceImpl {
 
     /**
      * 查询未审核作品数量
+     *
      * @param token
      * @return
      */
-    public ResultContent getNumOfUnReviewedWorks(String token){
+    public ResultContent getNumOfUnReviewedWorks(String token) {
         logger.info("查询未审核作品数量");
         int result = worksInfoMapper.selectNumOfUnReviewedWorks();
         JSONObject jsonObject = new JSONObject();
@@ -237,11 +243,12 @@ public class WorksServiceImpl {
 
     /**
      * 查询报名人数
+     *
      * @param activityId
      * @param token
      * @return
      */
-    public ResultContent getNumOfRegistration(String activityId, String token){
+    public ResultContent getNumOfRegistration(String activityId, String token) {
         logger.info("查询报名人数");
         int result = authorInfoMapper.selectCountByActivityId(activityId);
         JSONObject jsonObject = new JSONObject();
@@ -251,11 +258,12 @@ public class WorksServiceImpl {
 
     /**
      * 作品投票
+     *
      * @param worksId
      * @param token
      * @return
      */
-    public ResultContent addNumOfVotesOnce(String worksId, String token){
+    public ResultContent addNumOfVotesOnce(String worksId, String token) {
         //查询作品得票数
         WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
 
@@ -263,26 +271,27 @@ public class WorksServiceImpl {
         worksInfo.setWorksUuid(worksId);
         worksInfo.setNumberOfVotes(works.getNumberOfVotes() + 1);
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
-        if (result > 0){
-            return  new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
-        }else{
-            return  new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        if (result > 0) {
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        } else {
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
         }
     }
 
     /**
-     *查询作品详情
+     * 查询作品详情
+     *
      * @param worksId
      * @param token
      * @return
      */
-    public ResultContent getWorksInfo(String worksId, String token){
+    public ResultContent getWorksInfo(String worksId, String token) {
         logger.info("开始查询作品详情");
         WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
         String imageInfo = worksInfo.getImage();
         //获取图片URL
-        List<String> imageUrlList=new ArrayList<>();
-        if(StringUtils.isNotEmpty(imageInfo)) {
+        List<String> imageUrlList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(imageInfo)) {
             JSONArray jsonArray = JSON.parseArray(imageInfo);
             for (int i = 0; i < jsonArray.size(); i++) {
                 String imageUrl = "";
@@ -304,27 +313,27 @@ public class WorksServiceImpl {
             }
         }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("worksNum",worksInfo.getWorksNum());
-        jsonObject.put("worksUuid",worksInfo.getWorksUuid());
-        jsonObject.put("worksName",worksInfo.getWorksName());
-        jsonObject.put("authorId",worksInfo.getAuthorId());
+        jsonObject.put("worksNum", worksInfo.getWorksNum());
+        jsonObject.put("worksUuid", worksInfo.getWorksUuid());
+        jsonObject.put("worksName", worksInfo.getWorksName());
+        jsonObject.put("authorId", worksInfo.getAuthorId());
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
         jsonObject.put("phone", authorInfo.getPhone());
-        jsonObject.put("authorName",authorInfo.getAuthorName());
+        jsonObject.put("authorName", authorInfo.getAuthorName());
         //查询作品得票数
 //        GiftRecord giftRecord = giftRecordMapper.selectByWorksId(worksInfo.getWorksUuid());//根据作品ID查询礼物赠送情况
 //        TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
 //        Integer votesNum = worksInfo.getNumberOfVotes() + typeOfGift.ge;
-        jsonObject.put("numberOfVotes",worksInfo.getNumberOfVotes());
-        jsonObject.put("introductionOfWorks",worksInfo.getIntroductionOfWorks());
-        jsonObject.put("imageUrl",imageUrlList);
-        jsonObject.put("numOfClicks",worksInfo.getNumOfClicks());
-        jsonObject.put("createTime",worksInfo.getCreateTime());
+        jsonObject.put("numberOfVotes", worksInfo.getNumberOfVotes());
+        jsonObject.put("introductionOfWorks", worksInfo.getIntroductionOfWorks());
+        jsonObject.put("imageUrl", imageUrlList);
+        jsonObject.put("numOfClicks", worksInfo.getNumOfClicks());
+        jsonObject.put("createTime", worksInfo.getCreateTime());
 
 
         //查询作品名次
         //TODO 待验证
-        int  ranking = worksInfoMapper.selectRankingByWorksId(worksId);
+        int ranking = worksInfoMapper.selectRankingByWorksId(worksId);
         jsonObject.put("ranking", ranking);
 
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
@@ -332,79 +341,83 @@ public class WorksServiceImpl {
 
     /**
      * 查询作品排行榜信息
+     *
      * @param activityId
      * @param pageNum
      * @param pageSize
      * @param token
      * @return
      */
-    public ResultPage getWorksLeaderBoard(String activityId, String pageNum, String pageSize, String token){
+    public ResultPage getWorksLeaderBoard(String activityId, String pageNum, String pageSize, String token) {
         logger.info("开始查询作品排行榜信息");
 
-        Page<WorksInfo> page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+        Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectWorksLeaderBoardByActivityId(activityId));
         List<WorksInfo> worksList = page.getResult();
         List<Map<String, Object>> worksInfoList = new ArrayList<>();
-        for (WorksInfo worksInfo: worksList){
-            Map<String, Object>map = new HashMap<>();
+        for (WorksInfo worksInfo : worksList) {
+            Map<String, Object> map = new HashMap<>();
             map.put("worksNum", worksInfo.getWorksNum());
             map.put("votes", worksInfo.getNumberOfVotes());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             map.put("authorName", authorInfo.getAuthorName());
             worksInfoList.add(map);
         }
-        return  new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, worksInfoList,
+        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, worksInfoList,
                 page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
     }
 
     /**
      * 审核作品
+     *
      * @param worksId
      * @param token
      * @return
      */
-    public ResultContent updateUnReviewedWorksInfo(String worksId, String token){
+    public ResultContent updateUnReviewedWorksInfo(String worksId, String token) {
         logger.info("开始审核作品");
         WorksInfo worksInfo = new WorksInfo();
         worksInfo.setWorksUuid(worksId);
         worksInfo.setStatus("1");
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
 
-        if (result > 0){
-            return  new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
-        }else{
-            return  new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        if (result > 0) {
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        } else {
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
         }
     }
 
     /**
      * 修改作品得票数以及点击量
+     *
      * @param worksId
      * @param numOfVotes
      * @param token
      * @return
      */
-    public ResultContent updateNumOfVotes(String worksId, String numOfVotes,String numOfClicks,  String token){
+    public ResultContent updateNumOfVotes(String worksId, String numOfVotes, String numOfClicks, String token) {
         logger.info("开始修改作品得票数");
         WorksInfo worksInfo = new WorksInfo();
         worksInfo.setWorksUuid(worksId);
         worksInfo.setNumberOfVotes(Integer.valueOf(numOfVotes));
         worksInfo.setNumOfClicks(Integer.valueOf(numOfClicks));
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
-        if (result > 0){
-            return  new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
-        }else{
-            return  new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        if (result > 0) {
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        } else {
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
         }
     }
 
     /**
-     *新增作品点击量
+     * 新增作品点击量
+     *
      * @param worksId
      * @param token
      * @return
      */
-    public ResultContent addClicksOfWorksOnce(String worksId, String token){
+    public ResultContent addClicksOfWorksOnce(String worksId, String token) {
 
         //查询作品得票数
         WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
@@ -413,31 +426,34 @@ public class WorksServiceImpl {
         worksInfo.setWorksUuid(worksId);
         worksInfo.setNumOfClicks(works.getNumOfClicks() + 1);
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
-        if (result > 0){
-            return  new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
-        }else{
-            return  new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        if (result > 0) {
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        } else {
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
         }
     }
 
     /**
      * 查询所有参赛作品
+     *
      * @param token
      * @return
      */
-    public ResultPage getAllActivityList(String pageNum, String pageSize, String token){
+    public ResultPage getAllActivityList(String pageNum, String pageSize, String token) {
         logger.info("开始查询所有参赛作品");
 
         List<ActivityInfo> activityList = activityInfoMapper.selectAllActivityInfo();
-        List<Map<String, Object>> mapList = new ArrayList<>() ;
-        Page<WorksInfo> page = null;
-        for (ActivityInfo activityInfo: activityList){
-            page= PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->
+        List<Map<String, Object>> mapList = new ArrayList<>();
+
+        Integer pages = 0;
+        Integer pageTotal = 0;
+        for (ActivityInfo activityInfo : activityList) {
+            Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                     worksInfoMapper.selectWorksLeaderBoardByActivityId(activityInfo.getActivityId()));
             Map<String, Object> map = new HashMap();
             List<WorksInfo> resultList = page.getResult();
             List<WorksList> list = new ArrayList<>();
-            for (WorksInfo worksInfo:resultList){
+            for (WorksInfo worksInfo : resultList) {
                 WorksList worksList = new WorksList();
                 worksList.setAuthorId(worksInfo.getAuthorId());
                 AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
@@ -452,16 +468,18 @@ public class WorksServiceImpl {
             }
             map.put("activityName", activityInfo.getActivityName());
             map.put("worksList", list);
+            pages = page.getPages();
+            pageTotal = (int) page.getTotal();
             mapList.add(map);
         }
 
-        return  new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, mapList,
-                page.getPageSize(), page.getPages(), page.getPageNum(), Integer.valueOf((int) page.getTotal()));
+        return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, mapList,
+                Integer.valueOf(pageSize), pages, Integer.valueOf(pageNum), pageTotal);
     }
 
-    private List getImageUrlList(String imageInfo){
-        List<String> imageUrlList=new ArrayList<>();
-        if(StringUtils.isNotEmpty(imageInfo)) {
+    private List getImageUrlList(String imageInfo) {
+        List<String> imageUrlList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(imageInfo)) {
             JSONArray jsonArray = JSON.parseArray(imageInfo);
             for (int i = 0; i < jsonArray.size(); i++) {
                 String imageUrl = "";
@@ -482,23 +500,23 @@ public class WorksServiceImpl {
                 }
             }
         }
-            return imageUrlList;
+        return imageUrlList;
     }
 
-    public ResultContent uploadFile(MultipartFile file){
+    public ResultContent uploadFile(MultipartFile file) {
         logger.info("开始执行上传文件服务");
 
-        if(null==file){
-            return new ResultContent(Constants.REQUEST_FAILED,"文件不能为空","");
+        if (null == file) {
+            return new ResultContent(Constants.REQUEST_FAILED, "文件不能为空", "");
         }
 
-        if(file.getSize()>5*1048576){
-            return new ResultContent(Constants.REQUEST_FAILED,"上传文件大小不能超过5M","");
+        if (file.getSize() > 5 * 1048576) {
+            return new ResultContent(Constants.REQUEST_FAILED, "上传文件大小不能超过5M", "");
         }
         String fileName = file.getOriginalFilename();
 
-        if(!ImageVerifyUtils.verifyImageName(fileName)){
-            return new ResultContent(Constants.REQUEST_FAILED,"上传文件非法，请上传正确图片","");
+        if (!ImageVerifyUtils.verifyImageName(fileName)) {
+            return new ResultContent(Constants.REQUEST_FAILED, "上传文件非法，请上传正确图片", "");
         }
         UploadFileByStringBase64Request request = new UploadFileByStringBase64Request();
         request.setOriginalFileName(fileName);
@@ -511,14 +529,14 @@ public class WorksServiceImpl {
         }
         request.setFileContent(new BASE64Encoder().encode(data));
 
-        ResultContent result=fileServiceImpl.uploadFileByBase64String(request);
+        ResultContent result = fileServiceImpl.uploadFileByBase64String(request);
 
-        if(result.getCode() == Constants.REQUEST_SUCCESS){
-            JSONObject jsonObject=new JSONObject();
-            jsonObject.put("fileUuid",result.getContent());
-            return new ResultContent(Constants.REQUEST_SUCCESS,Constants.SUCCESS,jsonObject);
-        }else {
-            return new ResultContent(Constants.REQUEST_FAILED,Constants.FAILED,"{}");
+        if (result.getCode() == Constants.REQUEST_SUCCESS) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("fileUuid", result.getContent());
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
+        } else {
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, "{}");
         }
     }
 }

@@ -3,6 +3,7 @@ package com.weixin.yixing.serviceImpl;
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.commons.utils.ResultPage;
+import com.commons.utils.StringUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
@@ -58,6 +59,7 @@ public class ActivityServiceImpl {
         WorksInfo works = new WorksInfo();
         works.setActivityId(activityId);
         String worksUuid = UUID.randomUUID().toString();
+        String authorUuid = UUID.randomUUID().toString();
         works.setWorksUuid(worksUuid);
         works.setIntroductionOfWorks(introductionOfWorks);
         works.setWorksName(worksName);
@@ -72,6 +74,7 @@ public class ActivityServiceImpl {
         works.setWorksNum(worksNo);
         works.setCreateTime(new Date());
         works.setModifyTime(new Date());
+        works.setAuthorId(authorUuid);
 
         //图片信息
         works.setImage(imageIdList);
@@ -88,7 +91,7 @@ public class ActivityServiceImpl {
         authorInfo.setPhone(phone);
         authorInfo.setGender("0");
         authorInfo.setCreateTime(new Date());
-        String authorUuid = UUID.randomUUID().toString();
+
         authorInfo.setAuthorUuid(authorUuid);
         int authorResult = authorInfoMapper.insertSelective(authorInfo);
         if(authorResult <= 0){
@@ -136,23 +139,31 @@ public class ActivityServiceImpl {
         logger.info("开始添加活动信息");
 
         ActivityInfo activityInfo = new ActivityInfo();
-        activityInfo.setActivityId(UUID.randomUUID().toString());
+        String activityUuid = UUID.randomUUID().toString();
+        activityInfo.setActivityId(activityUuid);
         activityInfo.setActivityName(activityName);
         activityInfo.setIntroductionOfActivity(content);
         activityInfo.setImage(imageId);
         activityInfo.setCreateTime(new Date());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try{
-            activityInfo.setDeadline(sdf.parse(deadline));
-        }catch (ParseException e){
-            e.printStackTrace();
+        activityInfo.setModifyTime(new Date());
+        if (StringUtils.isEmpty(deadline)){
+            activityInfo.setDeadline(new Date());
+        }else{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try{
+                activityInfo.setDeadline(sdf.parse(deadline));
+            }catch (ParseException e){
+                e.printStackTrace();
+            }
         }
 
         int result = activityInfoMapper.insertSelective(activityInfo);
+        JSONObject jsonObject = new JSONObject();
         if (result>0){
-            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+            jsonObject.put("activityUuid", activityUuid);
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
         }else{
-            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, jsonObject);
         }
     }
 
@@ -168,6 +179,7 @@ public class ActivityServiceImpl {
 
         ActivityInfo activityInfo = new ActivityInfo();
         activityInfo.setActivityId(activityId);
+        activityInfo.setModifyTime(new Date());
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try{
             Date date = sdf.parse(deadline);

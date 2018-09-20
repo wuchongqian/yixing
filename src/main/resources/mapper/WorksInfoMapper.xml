@@ -8,7 +8,7 @@
     <result column="works_name" jdbcType="VARCHAR" property="worksName" />
     <result column="author_id" jdbcType="VARCHAR" property="authorId" />
     <result column="number_of_votes" jdbcType="INTEGER" property="numberOfVotes" />
-    <result column="introduction_of_ works" jdbcType="VARCHAR" property="introductionOfWorks" />
+    <result column="introduction_of_works" jdbcType="VARCHAR" property="introductionOfWorks" />
     <result column="image" jdbcType="VARCHAR" property="image" />
     <result column="num_of_clicks" jdbcType="INTEGER" property="numOfClicks" />
     <result column="category" jdbcType="INTEGER" property="category" />
@@ -20,7 +20,7 @@
     <result column="memo" jdbcType="VARCHAR" property="memo" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, works_num, works_uuid, works_name, author_id, number_of_votes, "introduction_of_ works", 
+    id, works_num, works_uuid, works_name, author_id, number_of_votes, "introduction_of_works",
     image, num_of_clicks, category, activity_id, status, delete_tag, create_time, modify_time, 
     memo
   </sql>
@@ -184,7 +184,7 @@
   <insert id="insert" parameterType="com.weixin.yixing.entity.WorksInfo">
     insert into works_info (id, works_num, works_uuid, 
       works_name, author_id, number_of_votes, 
-      "introduction_of_ works", image, num_of_clicks, 
+      "introduction_of_works", image, num_of_clicks,
       category, activity_id, status, 
       delete_tag, create_time, modify_time, 
       memo)
@@ -217,7 +217,7 @@
         number_of_votes,
       </if>
       <if test="introductionOfWorks != null">
-        "introduction_of_ works",
+        introduction_of_works,
       </if>
       <if test="image != null">
         image,
@@ -317,7 +317,7 @@
         number_of_votes = #{numberOfVotes,jdbcType=INTEGER},
       </if>
       <if test="introductionOfWorks != null">
-        "introduction_of_ works" = #{introductionOfWorks,jdbcType=VARCHAR},
+        "introduction_of_works" = #{introductionOfWorks,jdbcType=VARCHAR},
       </if>
       <if test="image != null">
         image = #{image,jdbcType=VARCHAR},
@@ -356,7 +356,7 @@
       works_name = #{worksName,jdbcType=VARCHAR},
       author_id = #{authorId,jdbcType=VARCHAR},
       number_of_votes = #{numberOfVotes,jdbcType=INTEGER},
-      "introduction_of_ works" = #{introductionOfWorks,jdbcType=VARCHAR},
+      "introduction_of_works" = #{introductionOfWorks,jdbcType=VARCHAR},
       image = #{image,jdbcType=VARCHAR},
       num_of_clicks = #{numOfClicks,jdbcType=INTEGER},
       category = #{category,jdbcType=INTEGER},

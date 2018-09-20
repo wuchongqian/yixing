@@ -15,7 +15,7 @@ public class AuthorInfo {
 
     private String email;
 
-    private Integer like;
+    private Integer likes;
 
     private String introductionOfAuthor;
 
@@ -80,11 +80,11 @@ public class AuthorInfo {
     }
 
     public Integer getLike() {
-        return like;
+        return likes;
     }
 
     public void setLike(Integer like) {
-        this.like = like;
+        this.likes = like;
     }
 
     public String getIntroductionOfAuthor() {
