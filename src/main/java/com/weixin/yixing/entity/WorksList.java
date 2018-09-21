@@ -8,6 +8,8 @@ public class WorksList {
 
     private String worksId;
 
+    private String worksNum;
+
     private String authorName;
 
     private String authorId;
@@ -72,5 +74,13 @@ public class WorksList {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getWorksNum() {
+        return worksNum;
+    }
+
+    public void setWorksNum(String worksNum) {
+        this.worksNum = worksNum;
     }
 }

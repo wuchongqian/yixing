@@ -66,8 +66,10 @@ public class WorksServiceImpl {
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             worksList.setAuthorName(authorInfo.getAuthorName());
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
+            worksList.setStatus(worksInfo.getStatus());
+            worksList.setWorksNum(worksInfo.getWorksNum());
             worksList.setStatus(worksInfo.getStatus());
 
             String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
@@ -105,8 +107,10 @@ public class WorksServiceImpl {
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             worksList.setAuthorName(authorInfo.getAuthorName());
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
+            worksList.setStatus(worksInfo.getStatus());
+            worksList.setWorksNum(worksInfo.getWorksNum());
             worksList.setStatus(worksInfo.getStatus());
 
             String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
@@ -144,8 +148,9 @@ public class WorksServiceImpl {
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             worksList.setAuthorName(authorInfo.getAuthorName());
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
+            worksList.setWorksNum(worksInfo.getWorksNum());
 
             String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
             worksList.setImage(imageListStr);
@@ -182,8 +187,9 @@ public class WorksServiceImpl {
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             worksList.setAuthorName(authorInfo.getAuthorName());
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
+            worksList.setWorksNum(worksInfo.getWorksNum());
 
             String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
             worksList.setImage(imageListStr);
@@ -217,9 +223,10 @@ public class WorksServiceImpl {
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             worksList.setAuthorName(authorInfo.getAuthorName());
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-            worksList.setWorksId(worksInfo.getWorksNum());
+            worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
-            worksList.setStatus("0");
+            worksList.setWorksNum(worksInfo.getWorksNum());
+            worksList.setStatus(worksInfo.getStatus());
 
             String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
             worksList.setImage(imageListStr);
@@ -368,6 +375,7 @@ public class WorksServiceImpl {
         for (WorksInfo worksInfo : worksList) {
             Map<String, Object> map = new HashMap<>();
             map.put("worksNum", worksInfo.getWorksNum());
+            map.put("worksId", worksInfo.getWorksUuid());
             map.put("votes", worksInfo.getNumberOfVotes());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
             map.put("authorName", authorInfo.getAuthorName());
@@ -469,8 +477,10 @@ public class WorksServiceImpl {
                 AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
                 worksList.setAuthorName(authorInfo.getAuthorName());
                 worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
-                worksList.setWorksId(worksInfo.getWorksNum());
+                worksList.setWorksId(worksInfo.getWorksUuid());
                 worksList.setWorksName(worksInfo.getWorksName());
+                worksList.setWorksNum(worksInfo.getWorksNum());
+                worksList.setStatus(worksInfo.getStatus());
 
                 String imageListStr = JSONArray.toJSONString(getImageUrlList(worksInfo.getImage()));
                 worksList.setImage(imageListStr);
