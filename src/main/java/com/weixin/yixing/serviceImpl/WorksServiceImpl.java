@@ -392,11 +392,11 @@ public class WorksServiceImpl {
      * @param token
      * @return
      */
-    public ResultContent updateUnReviewedWorksInfo(String worksId, String token) {
+    public ResultContent updateUnReviewedWorksInfo(String worksId, String status, String token) {
         logger.info("开始审核作品");
         WorksInfo worksInfo = new WorksInfo();
         worksInfo.setWorksUuid(worksId);
-        worksInfo.setStatus("1");
+        worksInfo.setStatus(status);
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
 
         if (result > 0) {

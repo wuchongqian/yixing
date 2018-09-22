@@ -135,11 +135,12 @@ public class WorksController {
     @ApiOperation(value="审核作品", notes="审核作品")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "status", value = "作品状态（‘1’表示审核通过，‘2’表示不通过）", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
     @RequestMapping(value = "/updateUnReviewedWorksInfo", method = {RequestMethod.POST})
-    public ResultContent updateUnReviewedWorksInfo(String worksId, String token) {
-        return worksServiceImpl.updateUnReviewedWorksInfo(worksId, token);
+    public ResultContent updateUnReviewedWorksInfo(String worksId, String status, String token) {
+        return worksServiceImpl.updateUnReviewedWorksInfo(worksId, status, token);
     }
 
     @ApiOperation(value="修改作品得票数以及点击量", notes="修改作品得票数以及点击量")
