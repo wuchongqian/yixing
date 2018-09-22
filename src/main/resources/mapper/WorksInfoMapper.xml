@@ -72,7 +72,7 @@
 
   </select>
 
-  <select id="selectByKeywordOrderByTimeForPC" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByKeywordOrderByTimeForPC"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
@@ -112,7 +112,7 @@
     and delete_tag = '0'
   </select>
 
-  <select id="selectByKeywordOrderByTime" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByKeywordOrderByTime"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info
@@ -125,7 +125,7 @@
     order by create_time desc
   </select>
 
-  <select id="selectByKeywordOrderByVotes" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByKeywordOrderByVotes"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from works_info

@@ -113,6 +113,7 @@ public class AuthorServiceImpl {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("numOfVotes", worksInfo.getNumberOfVotes());
                 jsonObject.put("worksNo", worksInfo.getWorksNum());
+                jsonObject.put("status", worksInfo.getStatus());
                 jsonObject.put("introductionOfWorks", worksInfo.getIntroductionOfWorks());
                 jsonObject.put("numOfClicks", worksInfo.getNumOfClicks());
                 jsonObject.put("worksName", worksInfo.getWorksName());

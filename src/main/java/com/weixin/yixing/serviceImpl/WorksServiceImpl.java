@@ -343,7 +343,7 @@ public class WorksServiceImpl {
         jsonObject.put("imageUrl", imageUrlList);
         jsonObject.put("numOfClicks", worksInfo.getNumOfClicks());
         jsonObject.put("createTime", worksInfo.getCreateTime());
-
+        jsonObject.put("status", worksInfo.getStatus());
 
         //查询作品名次
         //TODO 待验证

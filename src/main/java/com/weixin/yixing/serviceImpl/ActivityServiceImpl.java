@@ -163,6 +163,9 @@ public class ActivityServiceImpl {
     public ResultContent addActivityInfo(String activityName, String content, String imageId, String deadline, String token){
         logger.info("开始添加活动信息");
 
+        if(StringUtils.isEmpty(activityName) || StringUtils.isEmpty(content)||StringUtils.isEmpty(imageId)||StringUtils.isEmpty(deadline)){
+             return new ResultContent(Constants.REQUEST_FAILED, "参数不能为空", "{}");
+        }
         ActivityInfo activityInfo = new ActivityInfo();
         String activityUuid = UUID.randomUUID().toString();
         activityInfo.setActivityId(activityUuid);
