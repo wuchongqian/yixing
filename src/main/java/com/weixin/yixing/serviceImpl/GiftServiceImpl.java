@@ -3,6 +3,7 @@ package com.weixin.yixing.serviceImpl;
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.commons.utils.ResultPage;
+import com.commons.utils.StringUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
@@ -78,6 +79,10 @@ public class GiftServiceImpl {
      */
     public ResultPage  getGiftTrack(String worksId, String pageNum, String pageSize, String  token){
         logger.info("开始查询礼物赠送情况");
+        if(StringUtils.isEmpty(worksId)){
+            return new ResultPage(ResultContent.CODE_FAILED, "worksId参数不能为空", "{}",
+                    null, null, null, null);
+        }
         Page<GiftRecord> page=PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->giftRecordMapper.selectByWorksId(worksId));
         List<GiftRecord> giftRecords = page.getResult();
         List<Map<String, Object>> giftTrackList = new ArrayList<>();
