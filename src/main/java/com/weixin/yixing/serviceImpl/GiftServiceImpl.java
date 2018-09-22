@@ -100,7 +100,7 @@ public class GiftServiceImpl {
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("giftTrackList",giftTrackList);
-        WorksInfo  worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+//        WorksInfo  worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
         jsonObject.put("vote",sum);
 
         return new ResultPage(ResultContent.CODE_SUCCESS, Constants.SUCCESS, jsonObject,
