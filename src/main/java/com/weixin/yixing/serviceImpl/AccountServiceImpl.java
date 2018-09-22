@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +26,16 @@ public class AccountServiceImpl {
     private static Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     @Autowired
-    private RedisTemplate redisTemplate;
-
-    @Autowired
     private RedisUtil redisUtil;
 
     @Autowired
     private WeChatUserMapper weChatUserMapper;
+
+    @Value("${appid}")
+    private String appid;
+
+    @Value("${secret}")
+    private String secret;
 
     private static final Long EXPIRES = 43200L;//半天
 
@@ -134,8 +138,8 @@ public class AccountServiceImpl {
         String wxCode = code;
         String requestUrl = "https://api.weixin.qq.com/sns/jscode2session";
         Map<String, String> requestUrlParam = new HashMap<String, String>();
-        requestUrlParam.put("appid", "wx1b24a95c2568e40d");//小程序appId
-        requestUrlParam.put("secret", "5b41eaa5675f7f8c5e7bbee09da9261c");
+        requestUrlParam.put("appid", appid);//小程序appId
+        requestUrlParam.put("secret", secret);
         requestUrlParam.put("js_code", wxCode);//小程序端返回的code
         requestUrlParam.put("grant_type", "authorization_code");//默认参数
 

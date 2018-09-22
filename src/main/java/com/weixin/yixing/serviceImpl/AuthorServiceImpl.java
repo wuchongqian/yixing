@@ -75,7 +75,7 @@ public class AuthorServiceImpl {
             worksList.add(jsonObject);
         }
         author.setWorksList(worksList);
-        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, authorInfo);
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, author);
     }
 
     /**
