@@ -21,10 +21,21 @@ public class AccountController {
 
     @ApiOperation(value="微信登录", notes="微信登录")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="query", name = "code", value = "活动ID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "code", value = "微信code", required = true, dataType = "String"),
     })
     @RequestMapping(value = "/wetChatLogin", method = {RequestMethod.GET})
-    public JSONObject getSessionKeyOrOpenId(String code) {
-        return accountServiceImpl.getSessionKeyOrOpenId(code);
+    public ResultContent wetChatLogin(String code) {
+        return accountServiceImpl.weChatLogin(code);
     }
+
+    @ApiOperation(value="更新微信账号信息", notes="更新微信账号信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "openId", value = "微信OPENID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "rawData", value = "微信账号信息字符串", required = true, dataType = "String"),
+    })
+    @RequestMapping(value = "/updateWeChatUserInfo", method = {RequestMethod.POST})
+    public ResultContent updateWeChatUserInfo(String openId, String rawData) {
+        return accountServiceImpl.updateWeChatUserInfo(openId, rawData);
+    }
+
 }

@@ -196,7 +196,7 @@
         ubalance = #{ubalance,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where open_id = #{openId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.weixin.yixing.entity.WeChatUser">
     update wechat_user
@@ -214,6 +214,6 @@
       province = #{province,jdbcType=VARCHAR},
       city = #{city,jdbcType=VARCHAR},
       ubalance = #{ubalance,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where open_id = #{openId,jdbcType=VARCHAR}
   </update>
 </mapper>
