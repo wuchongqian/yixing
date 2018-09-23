@@ -21,8 +21,8 @@ public class GiftController {
     @ApiOperation(value="赠送礼物", notes="赠送礼物")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "giftId", value = "礼物ID", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "presenterId", value = "赠送人ID", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "presenterName", value = "赠送者姓名", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "presenterId", value = "赠送人微信OpenID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "presenterName", value = "赠送者微信姓名", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })

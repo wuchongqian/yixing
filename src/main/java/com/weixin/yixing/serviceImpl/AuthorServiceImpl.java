@@ -7,11 +7,9 @@ import com.commons.utils.ResultContent;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.ActivityInfoMapper;
 import com.weixin.yixing.dao.AuthorInfoMapper;
+import com.weixin.yixing.dao.UserAuthorRecordMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
-import com.weixin.yixing.entity.ActivityInfo;
-import com.weixin.yixing.entity.AuthorInfo;
-import com.weixin.yixing.entity.AuthorList;
-import com.weixin.yixing.entity.WorksInfo;
+import com.weixin.yixing.entity.*;
 import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AuthorServiceImpl {
@@ -40,13 +35,16 @@ public class AuthorServiceImpl {
     @Autowired
     private ActivityInfoMapper activityInfoMapper;
 
+    @Autowired
+    private UserAuthorRecordMapper userAuthorRecordMapper;
+
     /**
      * 查询作者详情
      * @param authorId
      * @param token
      * @return
      */
-    public ResultContent getAuthorInfo(String activityId, String authorId, String token){
+    public ResultContent getAuthorInfo(String openId, String activityId, String authorId, String token){
         logger.info("开始查询作者详情");
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
         AuthorList author = new AuthorList();
@@ -57,6 +55,11 @@ public class AuthorServiceImpl {
         author.setPhone(authorInfo.getPhone());
         Integer sum = worksInfoMapper.getSumOfVotesByAuthorId(authorId);
         author.setSumOfVotes(sum.toString());
+        Map<String, Object> map = new HashMap<>();
+        map.put("openId", openId);
+        map.put("authorId", authorId);
+        UserAuthorRecord userAuthorRecord = userAuthorRecordMapper.selectByWorksId(map);
+        author.setLikeStatus(userAuthorRecord.getLikeStatus());
         List<JSONObject>worksList = new ArrayList<>();
         //获取作者作品列表
         Map<String, Object> map1 = new HashMap<>();
@@ -67,6 +70,7 @@ public class AuthorServiceImpl {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("numOfVotes", worksInfo.getNumberOfVotes());
             jsonObject.put("worksNo", worksInfo.getWorksNum());
+            jsonObject.put("worksId", worksInfo.getWorksUuid());
             jsonObject.put("introductionOfWorks", worksInfo.getIntroductionOfWorks());
             jsonObject.put("numOfClicks", worksInfo.getNumOfClicks());
             jsonObject.put("worksName", worksInfo.getWorksName());
@@ -113,6 +117,7 @@ public class AuthorServiceImpl {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("numOfVotes", worksInfo.getNumberOfVotes());
                 jsonObject.put("worksNo", worksInfo.getWorksNum());
+                jsonObject.put("worksId", worksInfo.getWorksUuid());
                 jsonObject.put("status", worksInfo.getStatus());
                 jsonObject.put("introductionOfWorks", worksInfo.getIntroductionOfWorks());
                 jsonObject.put("numOfClicks", worksInfo.getNumOfClicks());
@@ -135,16 +140,52 @@ public class AuthorServiceImpl {
      * @param token
      * @return
      */
-    public ResultContent addLikeOfAuthor(String authorId, String token){
+    public ResultContent addLikeOfAuthor(String openId, String authorId, String token){
         logger.info("开始添加喜欢作者");
+
+        UserAuthorRecord userAuthorRecord = new UserAuthorRecord();
+        userAuthorRecord.setAuthorUuid(authorId);
+        userAuthorRecord.setWechatOpenid(openId);
+        userAuthorRecord.setLikeStatus("1");
+        userAuthorRecord.setCreateTime(new Date());
+        userAuthorRecord.setModifyTime(new Date());
+        int recordResult = userAuthorRecordMapper.insert(userAuthorRecord);
+
+        AuthorInfo author = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
+        AuthorInfo authorInfo = new AuthorInfo();
+        authorInfo.setAuthorUuid(authorId);
+        authorInfo.setLike(author.getLike() + 1);
+        int result = authorInfoMapper.updateByPrimaryKeySelective(authorInfo);
+        if (result > 0 && recordResult >0){
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        }else{
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        }
+    }
+
+    /**
+     * 取消喜欢作者
+     * @param authorId
+     * @param openId
+     * @param token
+     * @return
+     */
+    public ResultContent cancelLikeOfAuthor(String openId, String authorId, String token){
+        logger.info("开始取消喜欢作者");
+        UserAuthorRecord userAuthorRecord = new UserAuthorRecord();
+        userAuthorRecord.setAuthorUuid(authorId);
+        userAuthorRecord.setWechatOpenid(openId);
+        userAuthorRecord.setLikeStatus("0");
+        userAuthorRecord.setModifyTime(new Date());
+        int recordResult = userAuthorRecordMapper.updateByPrimaryKeySelective(userAuthorRecord);
         //查询作者喜欢数
         AuthorInfo author = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
 
         AuthorInfo authorInfo = new AuthorInfo();
         authorInfo.setAuthorUuid(authorId);
-        authorInfo.setLike(author.getLike() + 1);
+        authorInfo.setLike(author.getLike() - 1);
         int result = authorInfoMapper.updateByPrimaryKeySelective(authorInfo);
-        if (result > 0){
+        if (result > 0 && recordResult >0){
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
         }else{
             return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());

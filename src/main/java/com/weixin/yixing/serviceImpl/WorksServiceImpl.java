@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -41,6 +42,11 @@ public class WorksServiceImpl {
     @Autowired
     private ActivityInfoMapper activityInfoMapper;
 
+    @Autowired
+    private WeChatUserMapper weChatUserMapper;
+
+    @Autowired
+    private UserVotesRecordMapper userVotesRecordMapper;
 
     /**
      * 查询PC端作品列表根据时间排序
@@ -275,8 +281,35 @@ public class WorksServiceImpl {
      * @param token
      * @return
      */
-    public ResultContent addNumOfVotesOnce(String worksId, String token) {
+    public ResultContent addNumOfVotesOnce(String openId,String worksId, String token) {
         logger.info("开始投票");
+
+        //查询是否超过投票限制
+        WeChatUser weChatUser = weChatUserMapper.findByOpenid(openId);
+        int limit = weChatUser.getVoteNum();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(new Date());
+        Map<String, Object>map = new HashMap<>();
+        map.put("openId",openId);
+        map.put("dateStr", dateStr);
+        List<UserVotesRecord>list = userVotesRecordMapper.selectByDate(map);
+        int sumOfVotes = 0;
+        for(UserVotesRecord userVotesRecord:list){
+            sumOfVotes = sumOfVotes + userVotesRecord.getVotes();
+        }
+        if (sumOfVotes >= limit){
+            return new ResultContent(Constants.REQUEST_FAILED, "已达到每日投票上限", "{}");
+        } else {
+            UserVotesRecord userVotesRecord = new UserVotesRecord();
+            userVotesRecord.setWechatOpenid(openId);
+            userVotesRecord.setWorksUuid(worksId);
+            userVotesRecord.setVotingDate(dateStr);
+            userVotesRecord.setVotes(1);
+            userVotesRecord.setCreateTime(new Date());
+            userVotesRecord.setModifyTime(new Date());
+            userVotesRecordMapper.insert(userVotesRecord);
+        }
+
         //查询作品得票数
         WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
 
@@ -334,10 +367,6 @@ public class WorksServiceImpl {
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
         jsonObject.put("phone", authorInfo.getPhone());
         jsonObject.put("authorName", authorInfo.getAuthorName());
-        //查询作品得票数
-//        GiftRecord giftRecord = giftRecordMapper.selectByWorksId(worksInfo.getWorksUuid());//根据作品ID查询礼物赠送情况
-//        TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
-//        Integer votesNum = worksInfo.getNumberOfVotes() + typeOfGift.ge;
         jsonObject.put("numberOfVotes", worksInfo.getNumberOfVotes());
         jsonObject.put("introductionOfWorks", worksInfo.getIntroductionOfWorks());
         jsonObject.put("imageUrl", imageUrlList);
@@ -351,7 +380,7 @@ public class WorksServiceImpl {
         map.put("WorksId", worksId);
         map.put("activityId", worksInfo.getActivityId());
 //        int ranking = worksInfoMapper.selectRankingByWorksId(map);
-//        jsonObject.put("ranking", ranking);
+        jsonObject.put("ranking", 4);
 
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }

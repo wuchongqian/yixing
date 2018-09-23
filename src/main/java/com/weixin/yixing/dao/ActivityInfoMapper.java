@@ -15,7 +15,10 @@ public interface ActivityInfoMapper {
 
     ActivityInfo selectActivityInfoByActivityId(String activityId);
 
+    ActivityInfo selectNewActivityInfo();
+
     List<ActivityInfo> selectAllActivityInfo();
+
 
     int updateByPrimaryKeySelective(ActivityInfo record);
 

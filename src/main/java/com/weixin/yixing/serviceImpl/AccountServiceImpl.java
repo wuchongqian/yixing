@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.config.RedisUtil;
 import com.weixin.yixing.constants.Constants;
+import com.weixin.yixing.dao.ActivityInfoMapper;
 import com.weixin.yixing.dao.WeChatUserMapper;
+import com.weixin.yixing.entity.ActivityInfo;
 import com.weixin.yixing.entity.WeChatUser;
 import com.weixin.yixing.utils.HttpClientUtil;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -30,6 +31,9 @@ public class AccountServiceImpl {
 
     @Autowired
     private WeChatUserMapper weChatUserMapper;
+
+    @Autowired
+    private ActivityInfoMapper activityInfoMapper;
 
     @Value("${appid}")
     private String appid;
@@ -66,6 +70,8 @@ public class AccountServiceImpl {
         sessionObj.put("openId", wxOpenId);
         sessionObj.put("sessionKey", wxSessionKey);
         sessionObj.put("token", userToken);
+        ActivityInfo activityInfo = activityInfoMapper.selectNewActivityInfo();
+        sessionObj.put("activityId", activityInfo.getActivityId());
         redisUtil.set(userToken, sessionObj.toJSONString(), expires);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, sessionObj);
     }
@@ -78,10 +84,8 @@ public class AccountServiceImpl {
      */
     public ResultContent updateWeChatUserInfo(String openid, String rawData) {
         logger.info("Start get SessionKey");
-
-        System.out.println("用户非敏感信息" + rawData);
+        ;
         JSONObject rawDataJson = JSON.parseObject(rawData);
-
         //入库
         String nickName = rawDataJson.getString("nickName");
         String avatarUrl = rawDataJson.getString("avatarUrl");

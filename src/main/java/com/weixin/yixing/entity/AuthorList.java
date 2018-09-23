@@ -20,6 +20,8 @@ public class AuthorList {
 
     private List worksList;
 
+    private String likeStatus;
+
     public String getAuthorUuid() {
         return authorUuid;
     }
@@ -82,5 +84,13 @@ public class AuthorList {
 
     public void setWorksList(List worksList) {
         this.worksList = worksList;
+    }
+
+    public String getLikeStatus() {
+        return likeStatus;
+    }
+
+    public void setLikeStatus(String likeStatus) {
+        this.likeStatus = likeStatus;
     }
 }

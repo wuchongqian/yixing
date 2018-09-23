@@ -27,6 +27,7 @@ public class ActivityController {
 
     @ApiOperation(value="参加活动，上传作品", notes="参加活动，上传作品")
     @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "openId", value = "微信用户ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "authorName", value = "作者名", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "phone", value = "手机号", required = true, dataType = "String"),
@@ -36,8 +37,8 @@ public class ActivityController {
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
     @RequestMapping(value = "/addRegisterInfo", method = {RequestMethod.POST})
-    public ResultContent addRegisterInfo(String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList, String token) throws IOException {
-        return activityServiceImpl.addRegisterInfo(activityId, authorName, phone, worksName, introductionOfWorks, imageIdList, token);
+    public ResultContent addRegisterInfo(String openId, String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList, String token) throws IOException {
+        return activityServiceImpl.addRegisterInfo(openId, activityId, authorName, phone, worksName, introductionOfWorks, imageIdList, token);
     }
 
     @ApiOperation(value="查询活动详情", notes="查询活动详情")

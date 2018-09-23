@@ -102,12 +102,13 @@ public class WorksController {
 
     @ApiOperation(value="作品投票", notes="作品投票")
     @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "openId", value = "微信用户ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
     @RequestMapping(value = "/addNumOfVotesOnce", method = {RequestMethod.POST})
-    public ResultContent addNumOfVotesOnce(String worksId, String token) {
-        return worksServiceImpl.addNumOfVotesOnce(worksId, token);
+    public ResultContent addNumOfVotesOnce(String openId, String worksId, String token) {
+        return worksServiceImpl.addNumOfVotesOnce(openId,worksId, token);
     }
 
     @ApiOperation(value="查询作品详情", notes="查询作品详情")
