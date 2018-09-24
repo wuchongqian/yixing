@@ -375,12 +375,17 @@ public class WorksServiceImpl {
         jsonObject.put("status", worksInfo.getStatus());
 
         //查询作品名次
-        //TODO 待验证
         Map<String, String > map = new HashMap<>();
         map.put("WorksId", worksId);
         map.put("activityId", worksInfo.getActivityId());
-//        int ranking = worksInfoMapper.selectRankingByWorksId(map);
-        jsonObject.put("ranking", 4);
+        List<WorksInfo> list = worksInfoMapper.selectWorksLeaderBoardByActivityId(worksInfo.getActivityId());
+        int ranking= 0;
+        for (int i = 0; i< list.size(); i++){
+            if (worksId.equals(list.get(i).getWorksUuid())){
+                ranking = i+1;
+            }
+        }
+        jsonObject.put("ranking", ranking);
 
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }

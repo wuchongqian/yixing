@@ -80,8 +80,6 @@ public class FileServiceImpl {
 
     }
 
-
-
     public ResultContent uploadFileByBase64String(UploadFileByStringBase64Request request) {
         byte[] buffer = null;
         try {

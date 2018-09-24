@@ -51,14 +51,13 @@ public class MiniProgramController {
 
     @ApiOperation(value="点击量查询", notes="点击量查询")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "year", value = "活动ID", required = true, dataType = "Integer"),
             @ApiImplicitParam(paramType="query", name = "month", value = "活动ID", required = true, dataType = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
     @RequestMapping(value = "/getViewsDistribute", method = {RequestMethod.GET})
-    public ResultContent getViewsDistribute(String activityId, Integer year, Integer month, String token) {
-        return dataStatisticsServiceImpl.getViewsDistribute(activityId, year, month, token);
+    public ResultContent getViewsDistribute(Integer year, Integer month, String token) {
+        return dataStatisticsServiceImpl.getViewsDistribute(year, month, token);
     }
 
 }

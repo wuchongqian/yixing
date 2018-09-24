@@ -45,8 +45,6 @@ public interface WorksInfoMapper {
 
     List<WorksInfo> selectClicksDataByDate(Map<String, Object>map);
 
-    int selectRankingByWorksId(Map<String, String> map);//TODO 待验证
-
     int updateByPrimaryKeySelective(WorksInfo record);
 
     int updateByPrimaryKey(WorksInfo record);
