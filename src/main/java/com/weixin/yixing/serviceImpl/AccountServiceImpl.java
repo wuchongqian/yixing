@@ -70,8 +70,8 @@ public class AccountServiceImpl {
         sessionObj.put("openId", wxOpenId);
         sessionObj.put("sessionKey", wxSessionKey);
         sessionObj.put("token", userToken);
-        ActivityInfo activityInfo = activityInfoMapper.selectNewActivityInfo();
-        sessionObj.put("activityId", activityInfo.getActivityId());
+//        ActivityInfo activityInfo = activityInfoMapper.selectNewActivityInfo();
+//        sessionObj.put("activityId", activityInfo.getActivityId());
         redisUtil.set(userToken, sessionObj.toJSONString(), expires);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, sessionObj);
     }

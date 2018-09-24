@@ -132,7 +132,7 @@ public class ActivityServiceImpl {
         authorWorks.setWorksId(worksUuid);
         authorWorks.setCreateTime(new Date());
         int authorWorksResult = authorWorksMapper.insertSelective(authorWorks);
-        if(authorResult <= 0){
+        if(authorWorksResult <= 0){
             return new ResultContent(Constants.REQUEST_FAILED, "新增作者作品关联信息错误", "{}");
         }
         JSONObject jsonObject = new JSONObject();

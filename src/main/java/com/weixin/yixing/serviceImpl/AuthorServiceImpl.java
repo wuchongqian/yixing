@@ -59,7 +59,9 @@ public class AuthorServiceImpl {
         map.put("openId", openId);
         map.put("authorId", authorId);
         UserAuthorRecord userAuthorRecord = userAuthorRecordMapper.selectByWorksId(map);
-        author.setLikeStatus(userAuthorRecord.getLikeStatus());
+        if (null != userAuthorRecord){
+            author.setLikeStatus(userAuthorRecord.getLikeStatus());
+        }
         List<JSONObject>worksList = new ArrayList<>();
         //获取作者作品列表
         Map<String, Object> map1 = new HashMap<>();

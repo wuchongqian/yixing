@@ -64,6 +64,9 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByTimeForPC(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -105,6 +108,9 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByVotesForPC(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -146,6 +152,9 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByTime(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -185,6 +194,9 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByVotes(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -221,6 +233,9 @@ public class WorksServiceImpl {
 
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByUnReviewedWorksForPC());
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "作品全部审核完成", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
@@ -404,6 +419,9 @@ public class WorksServiceImpl {
 
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectWorksLeaderBoardByActivityId(activityId));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> worksList = page.getResult();
         List<Map<String, Object>> worksInfoList = new ArrayList<>();
         for (WorksInfo worksInfo : worksList) {
@@ -502,6 +520,9 @@ public class WorksServiceImpl {
         for (ActivityInfo activityInfo : activityList) {
             Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                     worksInfoMapper.selectWorksLeaderBoardByActivityId(activityInfo.getActivityId()));
+            if (null == page){
+                return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+            }
             Map<String, Object> map = new HashMap();
             List<WorksInfo> resultList = page.getResult();
             List<WorksList> list = new ArrayList<>();
