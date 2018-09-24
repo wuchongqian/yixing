@@ -2,6 +2,7 @@ package com.weixin.yixing.controller;
 
 import com.commons.utils.ResultContent;
 import com.commons.utils.ResultPage;
+import com.weixin.yixing.annotation.LoginRequired;
 import com.weixin.yixing.serviceImpl.WorksServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

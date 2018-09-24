@@ -38,4 +38,13 @@ public class AccountController {
         return accountServiceImpl.updateWeChatUserInfo(openId, rawData);
     }
 
+    @ApiOperation(value="获取最新活动信息", notes="获取最新活动信息")
+    @ApiImplicitParams({
+
+    })
+    @RequestMapping(value = "/getActivityId", method = {RequestMethod.GET})
+    public ResultContent getActivityId() {
+        return accountServiceImpl.getActivityId();
+    }
+
 }

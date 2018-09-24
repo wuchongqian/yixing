@@ -77,6 +77,18 @@ public class AccountServiceImpl {
     }
 
     /**
+     * 获取最新活动Id
+     * @return
+     */
+    public ResultContent getActivityId(){
+        JSONObject jsonObject = new JSONObject();
+        ActivityInfo activityInfo = activityInfoMapper.selectNewActivityInfo();
+        jsonObject.put("activityId", activityInfo.getActivityId());
+        jsonObject.put("activityName", activityInfo.getActivityName());
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
+    }
+
+    /**
      * 更新微信账号信息
      * @param openid
      * @param rawData
