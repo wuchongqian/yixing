@@ -23,10 +23,11 @@ public class WorksController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "keyword", value = "关键字查询（作品号，作品名次）", required = false, dataType = "String"),
-            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "页码，默认1", required = true, dataType = "int", defaultValue = "1"),
-            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
+            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "页码，默认1", required = true, dataType = "String", defaultValue = "1"),
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "String", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getWorksListByCreateTimeForPC", method = {RequestMethod.GET})
     public ResultPage getWorksListByCreateTimeForPC(String activityId, String keyword, String pageNum, String pageSize, String  token) {
         return worksServiceImpl.getWorksListByCreateTimeForPC(activityId, keyword, pageNum, pageSize, token);
@@ -40,6 +41,7 @@ public class WorksController {
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getWorksListByVotesForPC", method = {RequestMethod.GET})
     public ResultPage getWorksListByVotesForPC(String activityId, String keyword, String pageNum, String pageSize, String  token) {
         return worksServiceImpl.getWorksListByVotesForPC(activityId, keyword, pageNum, pageSize, token);
@@ -53,6 +55,7 @@ public class WorksController {
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getWorksListByCreateTime", method = {RequestMethod.GET})
     public ResultPage getWorksListByCreateTime(String activityId, String keyword, String pageNum, String pageSize, String  token) {
         return worksServiceImpl.getWorksListByCreateTime(activityId, keyword, pageNum, pageSize, token);
@@ -66,6 +69,7 @@ public class WorksController {
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getWorksListByVotes", method = {RequestMethod.GET})
     public ResultPage getWorksListByVotes(String activityId, String keyword, String pageNum, String pageSize, String  token) {
         return worksServiceImpl.getWorksListByVotes(activityId, keyword, pageNum, pageSize, token);
@@ -77,6 +81,7 @@ public class WorksController {
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getUnrReviewedWorksList", method = {RequestMethod.GET})
     public ResultPage getUnrReviewedWorksList(String pageNum, String pageSize, String  token) {
         return worksServiceImpl.getUnrReviewedWorksList(pageNum, pageSize, token);
@@ -86,6 +91,7 @@ public class WorksController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getNumOfUnReviewedWorks", method = {RequestMethod.GET})
     public ResultContent getNumOfUnReviewedWorks(String token) {
         return worksServiceImpl.getNumOfUnReviewedWorks(token);
@@ -96,6 +102,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getNumOfRegistration", method = {RequestMethod.GET})
     public ResultContent getNumOfRegistration(String activityId, String token) {
         return worksServiceImpl.getNumOfRegistration(activityId, token);
@@ -107,6 +114,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/addNumOfVotesOnce", method = {RequestMethod.POST})
     public ResultContent addNumOfVotesOnce(String openId, String worksId, String token) {
         return worksServiceImpl.addNumOfVotesOnce(openId,worksId, token);
@@ -117,6 +125,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getWorksInfo", method = {RequestMethod.GET})
     public ResultContent getWorksInfo(String worksId, String token) {
         return worksServiceImpl.getWorksInfo(worksId, token);
@@ -129,6 +138,7 @@ public class WorksController {
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getWorksLeaderBoard", method = {RequestMethod.GET})
     public ResultPage getWorksLeaderBoard(String activityId, String pageNum, String pageSize, String  token) {
         return worksServiceImpl.getWorksLeaderBoard(activityId, pageNum, pageSize, token);
@@ -140,6 +150,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "status", value = "作品状态（‘1’表示审核通过，‘2’表示不通过）", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/updateUnReviewedWorksInfo", method = {RequestMethod.POST})
     public ResultContent updateUnReviewedWorksInfo(String worksId, String status, String token) {
         return worksServiceImpl.updateUnReviewedWorksInfo(worksId, status, token);
@@ -152,6 +163,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "numOfClicks", value = "作品点击量", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/updateNumOfVotes", method = {RequestMethod.POST})
     public ResultContent updateNumOfVotes(String worksId, String numOfVotes,String numOfClicks,  String token) {
         return worksServiceImpl.updateNumOfVotes(worksId, numOfVotes, numOfClicks, token);
@@ -162,6 +174,7 @@ public class WorksController {
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/addClicksOfWorksOnce", method = {RequestMethod.POST})
     public ResultContent addClicksOfWorksOnce(String worksId, String token) {
         return worksServiceImpl.addClicksOfWorksOnce(worksId, token);
@@ -173,6 +186,7 @@ public class WorksController {
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "String", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getAllActivityList", method = {RequestMethod.GET})
     public ResultPage getAllActivityList(String pageNum, String pageSize, String  token) {
         return worksServiceImpl.getAllActivityList(pageNum, pageSize, token);

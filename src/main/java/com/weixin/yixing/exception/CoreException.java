@@ -42,7 +42,10 @@ public class CoreException extends RuntimeException{
     // user 相关以 10 开头
     public static final String[] USER_NOT_LOGIN = {"1000", "user_not_login", "用户尚未登录"};
     public static final String[] USER_LOGIN_INVALID = {"1001", "user_login_invalid", "用户登录token失效，请重新登录"};
-    public static final String[] MD5_PASSWORD_INVALID = {"1002", "md5_password_invalid", "密码加密异常"};
+
+    public static final String[] ACCOUNT_NOT_EXIST = {"1000", "account_not_exist", "此账号不存在"};
+    public static final String[] ACCOUNT_PASSOWRD_ERROR = {"1001", "account_password_error", "密码错误"};
+    public static final String[] ACCOUNT_EXIST_ALREADY = {"1002", "account_exist_already", "此账号已存在"};
 
     private String code = "1";//是否成功标志
     private String key = "";//错误key

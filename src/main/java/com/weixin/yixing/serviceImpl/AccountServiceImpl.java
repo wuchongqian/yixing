@@ -5,22 +5,22 @@ import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.config.RedisUtil;
 import com.weixin.yixing.constants.Constants;
+import com.weixin.yixing.dao.AccountMapper;
 import com.weixin.yixing.dao.ActivityInfoMapper;
 import com.weixin.yixing.dao.WeChatUserMapper;
+import com.weixin.yixing.entity.Account;
 import com.weixin.yixing.entity.ActivityInfo;
 import com.weixin.yixing.entity.WeChatUser;
+import com.weixin.yixing.exception.CoreException;
 import com.weixin.yixing.utils.HttpClientUtil;
-import org.apache.commons.lang.StringUtils;
+import com.weixin.yixing.utils.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AccountServiceImpl {
@@ -35,6 +35,9 @@ public class AccountServiceImpl {
     @Autowired
     private ActivityInfoMapper activityInfoMapper;
 
+    @Autowired
+    private AccountMapper accountMapper;
+
     @Value("${appid}")
     private String appid;
 
@@ -42,6 +45,77 @@ public class AccountServiceImpl {
     private String secret;
 
     private static final Long EXPIRES = 43200L;//半天
+
+    /**
+     * PC端登录
+     * @param username
+     * @param password
+     * @return
+     */
+    public ResultContent pcLogin(String username, String password){
+
+        String md5Pwd = "";
+        try {
+            md5Pwd = MD5Util.getGeneral32BitMD5(password);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        ResultContent res = accountVerification(username, md5Pwd);
+        JSONObject jsonObject = new JSONObject();
+        if (res.getCode() != 0){
+            return new ResultContent(Constants.REQUEST_FAILED, "用户或密码错误", jsonObject);
+        }else{
+            return getToken(username);
+        }
+    }
+
+    public ResultContent addAccount(String username, String password){
+        Account account = new Account();
+        List<Account> res = accountMapper.selectByAccount(username);
+        if(null!=res && res.size()>0){
+            throw CoreException.of(CoreException.ACCOUNT_EXIST_ALREADY);
+        }
+        String accountUuid = UUID.randomUUID().toString().replace("-","");
+        account.setAccount(username);
+        account.setAccountId(accountUuid);
+        account.setCreateTime(new Date());
+        account.setModifyTime(new Date());
+        String md5Pwd = "";
+        try {
+            md5Pwd = MD5Util.getGeneral32BitMD5(password);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        account.setPassword(md5Pwd);
+
+        int i = accountMapper.insert(account);
+        if (i>0){
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, username);
+        }else{
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, "");
+        }
+    }
+
+    private ResultContent getToken(String username){
+        String token = UUID.randomUUID().toString();
+        redisUtil.set(token, username,EXPIRES);
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, username);
+    }
+
+    private ResultContent accountVerification(String account, String password){
+
+        List<Account> res= accountMapper.selectByAccount(account);
+        if(null!=res && res.size()>0){
+            if(password.equals(res.get(0).getPassword())){
+                return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS,"{}");
+            } else {
+                throw CoreException.of(CoreException.ACCOUNT_PASSOWRD_ERROR);
+            }
+        } else {
+            throw CoreException.of(CoreException.ACCOUNT_NOT_EXIST);
+        }
+    }
 
     public ResultContent weChatLogin(String code) {
         logger.info("开始小程序登录");
@@ -83,6 +157,9 @@ public class AccountServiceImpl {
     public ResultContent getActivityId(){
         JSONObject jsonObject = new JSONObject();
         ActivityInfo activityInfo = activityInfoMapper.selectNewActivityInfo();
+        if(null == activityInfo){
+            return new ResultContent(Constants.REQUEST_FAILED, "暂无活动信息", jsonObject);
+        }
         jsonObject.put("activityId", activityInfo.getActivityId());
         jsonObject.put("activityName", activityInfo.getActivityName());
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);

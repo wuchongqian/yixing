@@ -47,4 +47,24 @@ public class AccountController {
         return accountServiceImpl.getActivityId();
     }
 
+    @ApiOperation(value="PC后台登录", notes="PC后台登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "username", value = "用户名", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "password", value = "密码", required = true, dataType = "String"),
+    })
+    @RequestMapping(value = "/pcLogin", method = {RequestMethod.GET})
+    public ResultContent pcLogin(String username, String password) {
+        return accountServiceImpl.pcLogin(username, password);
+    }
+
+    @ApiOperation(value="PC后台新增账号", notes="PC后台新增账号")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "username", value = "用户名", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "password", value = "密码", required = true, dataType = "String"),
+    })
+    @RequestMapping(value = "/addAccount", method = {RequestMethod.POST})
+    public ResultContent addAccount(String username, String password) {
+        return accountServiceImpl.addAccount(username, password);
+    }
+
 }

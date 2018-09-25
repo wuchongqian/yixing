@@ -73,7 +73,11 @@ public class WorksServiceImpl {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -117,7 +121,11 @@ public class WorksServiceImpl {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -161,7 +169,11 @@ public class WorksServiceImpl {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -358,6 +370,9 @@ public class WorksServiceImpl {
     public ResultContent getWorksInfo(String worksId, String token) {
         logger.info("开始查询作品详情");
         WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+        if (null == worksInfo){
+            return new ResultContent(Constants.REQUEST_FAILED, "该作品不存在", "{}");
+        }
         String imageInfo = worksInfo.getImage();
         //获取图片URL
         List<String> imageUrlList = new ArrayList<>();
@@ -388,8 +403,14 @@ public class WorksServiceImpl {
         jsonObject.put("worksName", worksInfo.getWorksName());
         jsonObject.put("authorId", worksInfo.getAuthorId());
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-        jsonObject.put("phone", authorInfo.getPhone());
-        jsonObject.put("authorName", authorInfo.getAuthorName());
+        if (null != authorInfo){
+            jsonObject.put("phone", authorInfo.getPhone());
+            jsonObject.put("authorName", authorInfo.getAuthorName());
+        }else{
+            jsonObject.put("phone", "");
+            jsonObject.put("authorName", "");
+        }
+
         jsonObject.put("numberOfVotes", worksInfo.getNumberOfVotes());
         jsonObject.put("introductionOfWorks", worksInfo.getIntroductionOfWorks());
         jsonObject.put("imageUrl", imageUrlList);
@@ -438,7 +459,11 @@ public class WorksServiceImpl {
             map.put("worksId", worksInfo.getWorksUuid());
             map.put("votes", worksInfo.getNumberOfVotes());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            map.put("authorName", authorInfo.getAuthorName());
+            if (null != authorInfo){
+                map.put("authorName", authorInfo.getAuthorName());
+            }else{
+                map.put("authorName", "");
+            }
             worksInfoList.add(map);
         }
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, worksInfoList,
@@ -538,7 +563,11 @@ public class WorksServiceImpl {
                 WorksList worksList = new WorksList();
                 worksList.setAuthorId(worksInfo.getAuthorId());
                 AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-                worksList.setAuthorName(authorInfo.getAuthorName());
+                if (null != authorInfo){
+                    worksList.setAuthorName(authorInfo.getAuthorName());
+                }else{
+                    worksList.setAuthorName("");
+                }
                 worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
                 worksList.setWorksId(worksInfo.getWorksUuid());
                 worksList.setWorksName(worksInfo.getWorksName());

@@ -11,6 +11,7 @@ import com.weixin.yixing.dao.UserAuthorRecordMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
 import com.weixin.yixing.entity.*;
 import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
+import com.weixin.yixing.exception.CoreException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,9 @@ public class AuthorServiceImpl {
     public ResultContent getAuthorInfo(String openId, String activityId, String authorId, String token){
         logger.info("开始查询作者详情");
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
+        if(null == authorInfo){
+            throw CoreException.of(CoreException.RESOURCE_NO_FOUND);
+        }
         AuthorList author = new AuthorList();
         author.setAuthorUuid(authorInfo.getAuthorUuid());
         author.setAuthorName(authorInfo.getAuthorName());
@@ -94,7 +98,7 @@ public class AuthorServiceImpl {
         logger.info("开始PC端查询作者详情");
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
         if (null == authorInfo){
-            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, "{}");
+            return new ResultContent(Constants.REQUEST_FAILED, "作者ID不存在", "{}");
         }
         AuthorList author = new AuthorList();
         author.setAuthorUuid(authorInfo.getAuthorUuid());
@@ -117,7 +121,11 @@ public class AuthorServiceImpl {
             List<JSONObject>worksList = new ArrayList<>();
             map.put("activityId", activityId);
             ActivityInfo activityInfo= activityInfoMapper.selectActivityInfoByActivityId(activityId);
-            map.put("activityName", activityInfo.getActivityName());
+            if (null != activityInfo){
+                map.put("activityName", activityInfo.getActivityName());
+            }else{
+                map.put("activityName", "");
+            }
             for (WorksInfo worksInfo: worksInfoList){
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("numOfVotes", worksInfo.getNumberOfVotes());
@@ -169,6 +177,9 @@ public class AuthorServiceImpl {
         }
 
         AuthorInfo author = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
+        if (null == author){
+            throw CoreException.of(CoreException.RESOURCE_NO_FOUND);
+        }
         AuthorInfo authorInfo = new AuthorInfo();
         authorInfo.setAuthorUuid(authorId);
         authorInfo.setLike(author.getLike() + 1);
@@ -197,7 +208,9 @@ public class AuthorServiceImpl {
         int recordResult = userAuthorRecordMapper.updateByPrimaryKeySelective(userAuthorRecord);
         //查询作者喜欢数
         AuthorInfo author = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
-
+        if (null == author){
+            throw CoreException.of(CoreException.RESOURCE_NO_FOUND);
+        }
         AuthorInfo authorInfo = new AuthorInfo();
         authorInfo.setAuthorUuid(authorId);
         authorInfo.setLike(author.getLike() - 1);

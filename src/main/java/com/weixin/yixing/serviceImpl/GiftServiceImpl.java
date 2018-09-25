@@ -57,10 +57,10 @@ public class GiftServiceImpl {
         Integer voteOfGift = typeOfGift.getVoteOfGift();
         WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
         Integer sum = voteOfGift + worksInfo.getNumberOfVotes();
-        WorksInfo newWokesInfo = new WorksInfo();
-        newWokesInfo.setWorksUuid(worksId);
-        newWokesInfo.setNumberOfVotes(sum);
-        int workResult = worksInfoMapper.updateByPrimaryKeySelective(newWokesInfo);
+        WorksInfo newWorksInfo = new WorksInfo();
+        newWorksInfo.setWorksUuid(worksId);
+        newWorksInfo.setNumberOfVotes(sum);
+        int workResult = worksInfoMapper.updateByPrimaryKeySelective(newWorksInfo);
         int result = giftRecordMapper.insert(giftRecord);
         if (result>0 && workResult>0){
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS,new JSONObject());

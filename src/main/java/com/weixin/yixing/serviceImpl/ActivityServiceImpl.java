@@ -15,6 +15,7 @@ import com.weixin.yixing.entity.ActivityInfo;
 import com.weixin.yixing.entity.AuthorInfo;
 import com.weixin.yixing.entity.AuthorWorks;
 import com.weixin.yixing.entity.WorksInfo;
+import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ActivityServiceImpl {
@@ -43,6 +41,8 @@ public class ActivityServiceImpl {
     @Autowired
     private AuthorWorksMapper authorWorksMapper;
 
+    @Autowired
+    private FileServiceImpl fileServiceImpl;
     /**
      *参加活动，上传作品
      * @param authorName
@@ -150,6 +150,18 @@ public class ActivityServiceImpl {
     public ResultContent getActivityInfo(String activityId, String token){
         logger.info("查询活动详情");
         ActivityInfo result = activityInfoMapper.selectActivityInfoByActivityId(activityId);
+        String imageId = result.getImage();
+        String imageUrl = "";
+        GetWidthResizedImageUrlRequest request = new GetWidthResizedImageUrlRequest();
+
+        request.setFileUuid(imageId);
+        request.setImageWidth(500);
+        ResultContent res = fileServiceImpl.getImageUrl(request);
+        if (res.getCode() == Constants.REQUEST_SUCCESS) {
+            Map<String, String> map = (Map<String, String>) res.getContent();
+            imageUrl = map.get("imageUrl");
+        }
+        result.setImage(imageUrl);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, result);
 
     }
