@@ -203,7 +203,11 @@ public class WorksServiceImpl {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -242,7 +246,11 @@ public class WorksServiceImpl {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());

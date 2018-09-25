@@ -93,6 +93,9 @@ public class AuthorServiceImpl {
     public ResultContent getAuthorInfoForPC(String authorId, String token){
         logger.info("开始PC端查询作者详情");
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
+        if (null == authorInfo){
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, "{}");
+        }
         AuthorList author = new AuthorList();
         author.setAuthorUuid(authorInfo.getAuthorUuid());
         author.setAuthorName(authorInfo.getAuthorName());
