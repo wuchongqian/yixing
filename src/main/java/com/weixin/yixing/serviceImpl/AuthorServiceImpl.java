@@ -144,14 +144,26 @@ public class AuthorServiceImpl {
      */
     public ResultContent addLikeOfAuthor(String openId, String authorId, String token){
         logger.info("开始添加喜欢作者");
-
+        Map<String, Object> map = new HashMap();
+        map.put("openId", openId);
+        map.put("authorId", authorId);
         UserAuthorRecord userAuthorRecord = new UserAuthorRecord();
-        userAuthorRecord.setAuthorUuid(authorId);
-        userAuthorRecord.setWechatOpenid(openId);
-        userAuthorRecord.setLikeStatus("1");
-        userAuthorRecord.setCreateTime(new Date());
-        userAuthorRecord.setModifyTime(new Date());
-        int recordResult = userAuthorRecordMapper.insert(userAuthorRecord);
+        int recordResult = 0;
+        UserAuthorRecord userAuthor = userAuthorRecordMapper.selectByWorksId(map);
+        if (null == userAuthor){
+            userAuthorRecord.setAuthorUuid(authorId);
+            userAuthorRecord.setWechatOpenid(openId);
+            userAuthorRecord.setLikeStatus("1");
+            userAuthorRecord.setCreateTime(new Date());
+            userAuthorRecord.setModifyTime(new Date());
+            recordResult = userAuthorRecordMapper.insert(userAuthorRecord);
+        }else {
+            userAuthorRecord.setAuthorUuid(authorId);
+            userAuthorRecord.setWechatOpenid(openId);
+            userAuthorRecord.setLikeStatus("1");
+            userAuthorRecord.setModifyTime(new Date());
+            recordResult = userAuthorRecordMapper.updateByPrimaryKeySelective(userAuthorRecord);
+        }
 
         AuthorInfo author = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
         AuthorInfo authorInfo = new AuthorInfo();
