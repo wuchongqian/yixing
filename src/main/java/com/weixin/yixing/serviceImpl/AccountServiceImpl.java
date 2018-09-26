@@ -100,7 +100,7 @@ public class AccountServiceImpl {
     private ResultContent getToken(String username){
         String token = UUID.randomUUID().toString();
         redisUtil.set(token, username,EXPIRES);
-        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, username);
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, token);
     }
 
     private ResultContent accountVerification(String account, String password){
