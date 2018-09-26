@@ -64,6 +64,19 @@ public class ActivityController {
         return activityServiceImpl.addActivityInfo(activityName, content, imageId, deadline, token);
     }
 
+    @ApiOperation(value="编辑更新活动信息", notes="编辑更新活动信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "activityId", value = "活动UUID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "activityName", value = "活动名称", required = false, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "content", value = "活动详情", required = false, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "imageId", value = "活动图片ID", required = false, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/updateActivityInfo", method = {RequestMethod.POST})
+    public ResultContent updateActivityInfo(String activityId, String activityName, String content, String imageId, String token) {
+        return activityServiceImpl.updateActivityInfo(activityId, activityName, content, imageId, token);
+    }
+
     @ApiOperation(value="修改活动截止日期", notes="修改活动截止日期")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
@@ -73,6 +86,15 @@ public class ActivityController {
     @RequestMapping(value = "/updateActivityDeadline", method = {RequestMethod.POST})
     public ResultContent updateActivityDeadline(String activityId, String deadline, String token) {
         return activityServiceImpl.updateActivityDeadline(activityId, deadline, token);
+    }
+
+    @ApiOperation(value="获取活动ID列表", notes="获取活动ID列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/getActivityIdList", method = {RequestMethod.GET})
+    public ResultContent getActivityIdList(String token) {
+        return activityServiceImpl.getActivityIdList(token);
     }
 
 }

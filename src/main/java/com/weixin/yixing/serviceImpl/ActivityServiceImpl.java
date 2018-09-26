@@ -210,6 +210,53 @@ public class ActivityServiceImpl {
     }
 
     /**
+     * 编辑活动信息
+     * @param activityName
+     * @param content
+     * @param imageId
+     * @param deadline
+     * @param token
+     * @return
+     */
+    public ResultContent updateActivityInfo(String activityUuid, String activityName, String content, String imageId, String token){
+        logger.info("开始编辑活动信息");
+
+        ActivityInfo activityInfo = new ActivityInfo();
+        activityInfo.setActivityId(activityUuid);
+        activityInfo.setActivityName(activityName);
+        activityInfo.setIntroductionOfActivity(content);
+        activityInfo.setImage(imageId);
+        activityInfo.setModifyTime(new Date());
+
+        int result = activityInfoMapper.updateByPrimaryKeySelective(activityInfo);
+        JSONObject jsonObject = new JSONObject();
+        if (result>0){
+            jsonObject.put("activityUuid", activityUuid);
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
+        }else{
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, jsonObject);
+        }
+    }
+
+    /**
+     * 获取所有活动ID列表
+     * @param token
+     * @return
+     */
+    public ResultContent getActivityIdList(String token){
+        logger.info("开始获取活动ID列表");
+        JSONObject jsonObject = new JSONObject();
+        List<JSONObject>list = new ArrayList<>();
+        List<ActivityInfo> activityInfoList = activityInfoMapper.selectAllActivityInfo();
+        for (ActivityInfo activityInfo: activityInfoList){
+            jsonObject.put("activityUuid", activityInfo.getActivityId());
+            jsonObject.put("activityName", activityInfo.getActivityName());
+            list.add(jsonObject);
+        }
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
+    }
+
+    /**
      * 修改活动截止日期
      * @param activityId
      * @param deadline
