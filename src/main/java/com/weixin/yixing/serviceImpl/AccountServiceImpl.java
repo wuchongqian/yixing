@@ -53,7 +53,7 @@ public class AccountServiceImpl {
      * @return
      */
     public ResultContent pcLogin(String username, String password){
-
+        logger.info("开始PC端登录");
         String md5Pwd = "";
         try {
             md5Pwd = MD5Util.getGeneral32BitMD5(password);
