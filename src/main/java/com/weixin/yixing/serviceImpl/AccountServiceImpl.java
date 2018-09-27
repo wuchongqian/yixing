@@ -44,7 +44,7 @@ public class AccountServiceImpl {
     @Value("${secret}")
     private String secret;
 
-    private static final Long EXPIRES = 43200L;//半天
+    private static final Long EXPIRES = 21600L;//半天
 
     /**
      * PC端登录

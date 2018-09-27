@@ -253,7 +253,7 @@ public class ActivityServiceImpl {
             jsonObject.put("activityName", activityInfo.getActivityName());
             list.add(jsonObject);
         }
-        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, list);
     }
 
     /**

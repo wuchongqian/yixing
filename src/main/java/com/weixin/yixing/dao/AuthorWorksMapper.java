@@ -13,6 +13,8 @@ public interface AuthorWorksMapper {
 
     AuthorWorks selectByAuthorId(String authorId);
 
+    AuthorWorks selectByWorksId(String worksId);
+
     int updateByPrimaryKeySelective(AuthorWorks record);
 
     int updateByPrimaryKey(AuthorWorks record);
