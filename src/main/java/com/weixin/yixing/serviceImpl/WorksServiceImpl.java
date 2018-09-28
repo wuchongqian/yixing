@@ -507,19 +507,20 @@ public class WorksServiceImpl {
         String authorName = authorInfo.getAuthorName();
         String msgResult = "";
         if("1".equals(status)){
-            msgResult = "作品已审核通过，谢谢参与！";
+            msgResult = "恭喜您作品已审核通过，敬请关注作品动态和投票结果";
         }else{
-            msgResult = "作品未审核通过,请联系:18676833933.";
+            msgResult = "作品未审核通过,如有疑问请联系:18676833933.";
         }
         ActivityInfo activityInfo = activityInfoMapper.selectActivityInfoByActivityId(authorInfo.getActivityId());
         String activityName = activityInfo.getActivityName();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-        JSONObject jsonObject = getJsonDate(authorName,sdf.format(new Date()), msgResult, activityName);
-        JSONObject resultObj = sendTemplateMessage(openId, "index", "keyword3.DATA", "12", jsonObject);
+        JSONObject jsonObject = getJsonDate(authorName, sdf.format(new Date()), msgResult, activityName);
+        System.out.println(jsonObject.toJSONString());
+        JSONObject resultObj = sendTemplateMessage(openId, "pages/home/main", "", "dd87319b65c5193bab1db7a0188810d8", jsonObject);
         if (result > 0 && resultObj.getInteger("errcode") == 0) {
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
         } else {
-            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+            return new ResultContent(Constants.REQUEST_FAILED, resultObj.getString("errmsg"), new JSONObject());
         }
     }
 
@@ -553,7 +554,7 @@ public class WorksServiceImpl {
         jsonObject.put("emphasis_keyword", emphasisKeyword);
         JSONObject object = new JSONObject();
         try{
-            object = JSON.parseObject(HttpClientUtil.jsonPost(sb.toString(), jsonObject));
+            object = JSON.parseObject(HttpClientUtil.httpsRequest(sb.toString(), "POST",jsonObject.toJSONString()));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -577,20 +578,20 @@ public class WorksServiceImpl {
     }
 
     private  JSONObject getJsonDate(String name, String date, String result, String activityName){
-        JSONObject jsonObject = new JSONObject();
+        JSONObject json = new JSONObject();
         JSONObject value1 = new JSONObject();
         value1.put("value", name);
+        json.put("name",value1);
         JSONObject value2 = new JSONObject();
         value2.put("value", date);
+        json.put("date",value2);
         JSONObject value3 = new JSONObject();
         value3.put("value", result);
+        json.put("msg",value3);
         JSONObject value4 = new JSONObject();
         value4.put("value", activityName);
-        jsonObject.put("keyword1",value1);
-        jsonObject.put("keyword2",value2);
-        jsonObject.put("keyword3",value3);
-        jsonObject.put("keyword4",value4);
-        return jsonObject;
+        json.put("activityName",value4);
+        return json;
     }
 
     /**
