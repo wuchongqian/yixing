@@ -503,6 +503,7 @@ public class WorksServiceImpl {
         AuthorWorks authorWorks = authorWorksMapper.selectByWorksId(worksId);
         String authorId = authorWorks.getAuthorId();
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
+        String formId = authorInfo.getFormId();
         String openId = authorInfo.getWechatOpenId();
         String authorName = authorInfo.getAuthorName();
         String msgResult = "";
@@ -516,7 +517,7 @@ public class WorksServiceImpl {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         JSONObject jsonObject = getJsonDate(authorName, sdf.format(new Date()), msgResult, activityName);
         System.out.println(jsonObject.toJSONString());
-        JSONObject resultObj = sendTemplateMessage(openId, "pages/home/main", "", "dd87319b65c5193bab1db7a0188810d8", jsonObject);
+        JSONObject resultObj = sendTemplateMessage(openId, "pages/home/main", "", formId, jsonObject);
         if (result > 0 && resultObj.getInteger("errcode") == 0) {
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
         } else {
