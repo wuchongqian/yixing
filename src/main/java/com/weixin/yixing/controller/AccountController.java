@@ -2,6 +2,7 @@ package com.weixin.yixing.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
+import com.weixin.yixing.annotation.LoginRequired;
 import com.weixin.yixing.serviceImpl.AccountServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,10 +33,12 @@ public class AccountController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "openId", value = "微信OPENID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "rawData", value = "微信账号信息字符串", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "token", value = "token", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/updateWeChatUserInfo", method = {RequestMethod.POST})
-    public ResultContent updateWeChatUserInfo(String openId, String rawData) {
-        return accountServiceImpl.updateWeChatUserInfo(openId, rawData);
+    public ResultContent updateWeChatUserInfo(String openId, String rawData, String token) {
+        return accountServiceImpl.updateWeChatUserInfo(openId, rawData, token);
     }
 
     @ApiOperation(value="获取最新活动信息", notes="获取最新活动信息")

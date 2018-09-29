@@ -2,6 +2,7 @@ package com.weixin.yixing.controller;
 
 import com.commons.utils.ResultContent;
 import com.commons.utils.ResultPage;
+import com.weixin.yixing.annotation.LoginRequired;
 import com.weixin.yixing.serviceImpl.GiftServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,18 +27,20 @@ public class GiftController {
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/addGift", method = {RequestMethod.POST})
     public ResultContent addGift(String giftId, String presenterId, String presenterName, String worksId, String token) {
         return giftServiceImpl.addGift(giftId, presenterId, presenterName, worksId, token);
     }
 
-    @ApiOperation(value="查询作品列表根据票数排序", notes="查询作品列表根据票数排序")
+    @ApiOperation(value="查询礼物赠送轨迹", notes="查询礼物赠送轨迹")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "pageNum", value = "页码，默认1", required = true, dataType = "int", defaultValue = "1"),
             @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页大小，默认10", required = true, dataType = "int", defaultValue = "10"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getGiftTrack", method = {RequestMethod.GET})
     public ResultPage getGiftTrack(String worksId, String pageNum, String pageSize, String  token) {
         return giftServiceImpl.getGiftTrack(worksId, pageNum, pageSize, token);

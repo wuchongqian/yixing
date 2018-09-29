@@ -1,6 +1,7 @@
 package com.weixin.yixing.controller;
 
 import com.commons.utils.ResultContent;
+import com.weixin.yixing.annotation.LoginRequired;
 import com.weixin.yixing.serviceImpl.AuthorServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -25,6 +26,7 @@ public class AuthorController {
             @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/getAuthorInfo", method = {RequestMethod.GET})
     public ResultContent getAuthorInfo(String openId, String activityId, String authorId, String token) {
         return authorServiceImpl.getAuthorInfo(openId, activityId, authorId, token);
@@ -35,6 +37,7 @@ public class AuthorController {
             @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/getAuthorInfoForPC", method = {RequestMethod.GET})
     public ResultContent getAuthorInfoForPC(String authorId, String token) {
         return authorServiceImpl.getAuthorInfoForPC(authorId, token);
@@ -46,6 +49,7 @@ public class AuthorController {
             @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/addLikeOfAuthor", method = {RequestMethod.GET})
     public ResultContent addLikeOfAuthor(String openId, String authorId, String token) {
         return authorServiceImpl.addLikeOfAuthor(openId, authorId, token);
@@ -57,6 +61,7 @@ public class AuthorController {
             @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/cancelLikeOfAuthor", method = {RequestMethod.GET})
     public ResultContent cancelLikeOfAuthor(String openId, String authorId, String token) {
         return authorServiceImpl.cancelLikeOfAuthor(openId, authorId, token);

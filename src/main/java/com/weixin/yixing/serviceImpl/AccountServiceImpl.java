@@ -171,7 +171,7 @@ public class AccountServiceImpl {
      * @param rawData
      * @return
      */
-    public ResultContent updateWeChatUserInfo(String openid, String rawData) {
+    public ResultContent updateWeChatUserInfo(String openid, String rawData, String token) {
         logger.info("Start get SessionKey");
         ;
         JSONObject rawDataJson = JSON.parseObject(rawData);

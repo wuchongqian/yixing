@@ -2,6 +2,7 @@ package com.weixin.yixing.controller;
 
 import com.commons.utils.ResultContent;
 import com.commons.utils.ResultPage;
+import com.weixin.yixing.annotation.LoginRequired;
 import com.weixin.yixing.serviceImpl.ActivityServiceImpl;
 import com.weixin.yixing.serviceImpl.WorksServiceImpl;
 import io.swagger.annotations.Api;
@@ -22,9 +23,6 @@ public class ActivityController {
     @Autowired
     private ActivityServiceImpl activityServiceImpl;
 
-    @Autowired
-    private WorksServiceImpl worksServiceImpl;
-
     @ApiOperation(value="参加活动，上传作品", notes="参加活动，上传作品")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "openId", value = "微信用户ID", required = true, dataType = "String"),
@@ -37,6 +35,7 @@ public class ActivityController {
             @ApiImplicitParam(paramType="query", name = "imageIdList", value = "图片ID列表：[{\"id\":\"001\"},{\"id\":\"002\"}]", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/addRegisterInfo", method = {RequestMethod.POST})
     public ResultContent addRegisterInfo(String openId, String formId, String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList, String token) throws IOException {
         return activityServiceImpl.addRegisterInfo(openId, formId, activityId, authorName, phone, worksName, introductionOfWorks, imageIdList, token);
@@ -47,6 +46,7 @@ public class ActivityController {
             @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getActivityInfo", method = {RequestMethod.GET})
     public ResultContent getActivityInfo(String activityId, String token) {
         return activityServiceImpl.getActivityInfo(activityId, token);
@@ -60,6 +60,7 @@ public class ActivityController {
             @ApiImplicitParam(paramType = "query", name = "deadline", value = "截止日期", required = false, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/addActivityInfo", method = {RequestMethod.POST})
     public ResultContent addActivityInfo(String activityName, String content, String imageId, String deadline, String token) {
         return activityServiceImpl.addActivityInfo(activityName, content, imageId, deadline, token);
@@ -73,6 +74,7 @@ public class ActivityController {
             @ApiImplicitParam(paramType = "query", name = "imageId", value = "活动图片ID", required = false, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/updateActivityInfo", method = {RequestMethod.POST})
     public ResultContent updateActivityInfo(String activityId, String activityName, String content, String imageId, String token) {
         return activityServiceImpl.updateActivityInfo(activityId, activityName, content, imageId, token);
@@ -84,6 +86,7 @@ public class ActivityController {
             @ApiImplicitParam(paramType = "query", name = "deadline", value = "截止日期", required = true, dataType = "String"),
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/updateActivityDeadline", method = {RequestMethod.POST})
     public ResultContent updateActivityDeadline(String activityId, String deadline, String token) {
         return activityServiceImpl.updateActivityDeadline(activityId, deadline, token);
@@ -93,6 +96,7 @@ public class ActivityController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
     })
+    @LoginRequired
     @RequestMapping(value = "/getActivityIdList", method = {RequestMethod.GET})
     public ResultContent getActivityIdList(String token) {
         return activityServiceImpl.getActivityIdList(token);
