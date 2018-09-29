@@ -2,10 +2,7 @@ package com.weixin.yixing.serviceImpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
-import com.commons.utils.ResultPage;
 import com.commons.utils.StringUtils;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.ActivityInfoMapper;
 import com.weixin.yixing.dao.AuthorInfoMapper;
@@ -52,7 +49,7 @@ public class ActivityServiceImpl {
      * @param token
      * @return
      */
-    public ResultContent addRegisterInfo(String openId, String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList,String token) {
+    public ResultContent addRegisterInfo(String openId, String formId, String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList,String token) {
         logger.info("开始添加作品信息");
         if(StringUtils.isEmpty(activityId) ){
             return new ResultContent(Constants.REQUEST_FAILED, "activityId参数不能为空，请重新填写", "{}");
@@ -116,6 +113,7 @@ public class ActivityServiceImpl {
         authorInfo.setPhone(phone);
         authorInfo.setWechatOpenId(openId);
         authorInfo.setGender("0");
+        authorInfo.setFormId(formId);
         authorInfo.setCreateTime(new Date());
         authorInfo.setModifyTime(new Date());
 

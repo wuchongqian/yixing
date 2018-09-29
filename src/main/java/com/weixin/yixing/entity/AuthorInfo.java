@@ -25,6 +25,8 @@ public class AuthorInfo {
 
     private String gender;
 
+    private String formId;
+
     private String deleteTag;
 
     private Date createTime;
@@ -79,12 +81,12 @@ public class AuthorInfo {
         this.email = email == null ? null : email.trim();
     }
 
-    public Integer getLike() {
+    public Integer getLikes() {
         return likes;
     }
 
-    public void setLike(Integer like) {
-        this.likes = like;
+    public void setLikes(Integer likes) {
+        this.likes = likes;
     }
 
     public String getIntroductionOfAuthor() {
@@ -117,6 +119,14 @@ public class AuthorInfo {
 
     public void setGender(String gender) {
         this.gender = gender == null ? null : gender.trim();
+    }
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId == null ? null : formId.trim();
     }
 
     public String getDeleteTag() {
