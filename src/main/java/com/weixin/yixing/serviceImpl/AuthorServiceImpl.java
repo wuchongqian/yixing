@@ -55,7 +55,7 @@ public class AuthorServiceImpl {
         author.setAuthorUuid(authorInfo.getAuthorUuid());
         author.setAuthorName(authorInfo.getAuthorName());
         author.setIntroductionOfAuthor(authorInfo.getIntroductionOfAuthor());
-        author.setLike(authorInfo.getLike());
+        author.setLike(authorInfo.getLikes());
         author.setPhone(authorInfo.getPhone());
         Integer sum = worksInfoMapper.getSumOfVotesByAuthorId(authorId);
         author.setSumOfVotes(sum.toString());
@@ -104,7 +104,7 @@ public class AuthorServiceImpl {
         author.setAuthorUuid(authorInfo.getAuthorUuid());
         author.setAuthorName(authorInfo.getAuthorName());
         author.setIntroductionOfAuthor(authorInfo.getIntroductionOfAuthor());
-        author.setLike(authorInfo.getLike());
+        author.setLike(authorInfo.getLikes());
         author.setPhone(authorInfo.getPhone());
         Integer sum = worksInfoMapper.getSumOfVotesByAuthorId(authorId);
         author.setSumOfVotes(sum.toString());
@@ -182,7 +182,7 @@ public class AuthorServiceImpl {
         }
         AuthorInfo authorInfo = new AuthorInfo();
         authorInfo.setAuthorUuid(authorId);
-        authorInfo.setLike(author.getLike() + 1);
+        authorInfo.setLikes(author.getLikes() + 1);
         int result = authorInfoMapper.updateByPrimaryKeySelective(authorInfo);
         if (result > 0 && recordResult >0){
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
@@ -213,7 +213,7 @@ public class AuthorServiceImpl {
         }
         AuthorInfo authorInfo = new AuthorInfo();
         authorInfo.setAuthorUuid(authorId);
-        authorInfo.setLike(author.getLike() - 1);
+        authorInfo.setLikes(author.getLikes() - 1);
         int result = authorInfoMapper.updateByPrimaryKeySelective(authorInfo);
         if (result > 0 && recordResult >0){
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
