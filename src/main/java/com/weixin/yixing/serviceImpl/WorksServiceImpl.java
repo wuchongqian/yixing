@@ -8,21 +8,25 @@ import com.commons.utils.ResultPage;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sun.org.apache.regexp.internal.RE;
+import com.weixin.yixing.config.RedisUtil;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.*;
 import com.weixin.yixing.entity.*;
 import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import com.weixin.yixing.entity.vo.UploadFileByStringBase64Request;
+import com.weixin.yixing.utils.HttpClientUtil;
 import com.weixin.yixing.utils.ImageVerifyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -41,6 +45,23 @@ public class WorksServiceImpl {
     @Autowired
     private ActivityInfoMapper activityInfoMapper;
 
+    @Autowired
+    private WeChatUserMapper weChatUserMapper;
+
+    @Autowired
+    private UserVotesRecordMapper userVotesRecordMapper;
+
+    @Autowired
+    private AuthorWorksMapper authorWorksMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
+
+    @Value("${appid}")
+    private String appid;
+
+    @Value("${secret}")
+    private String secret;
 
     /**
      * 查询PC端作品列表根据时间排序
@@ -58,13 +79,20 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByTimeForPC(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -99,13 +127,20 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByVotesForPC(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -140,13 +175,20 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByTime(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -179,13 +221,20 @@ public class WorksServiceImpl {
         map.put("keyword",keyword);
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByKeywordOrderByVotes(map));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -215,13 +264,20 @@ public class WorksServiceImpl {
 
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectByUnReviewedWorksForPC());
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "作品全部审核完成", "{}",1,1,1,1);
+        }
         List<WorksInfo> resultList = page.getResult();
         List<WorksList> list = new ArrayList<>();
         for (WorksInfo worksInfo : resultList) {
             WorksList worksList = new WorksList();
             worksList.setAuthorId(worksInfo.getAuthorId());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            worksList.setAuthorName(authorInfo.getAuthorName());
+            if (null != authorInfo){
+                worksList.setAuthorName(authorInfo.getAuthorName());
+            }else{
+                worksList.setAuthorName("");
+            }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
@@ -275,8 +331,35 @@ public class WorksServiceImpl {
      * @param token
      * @return
      */
-    public ResultContent addNumOfVotesOnce(String worksId, String token) {
+    public ResultContent addNumOfVotesOnce(String openId,String worksId, String token) {
         logger.info("开始投票");
+
+        //查询是否超过投票限制
+        WeChatUser weChatUser = weChatUserMapper.findByOpenid(openId);
+        int limit = weChatUser.getVoteNum();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = sdf.format(new Date());
+        Map<String, Object>map = new HashMap<>();
+        map.put("openId",openId);
+        map.put("dateStr", dateStr);
+        List<UserVotesRecord>list = userVotesRecordMapper.selectByDate(map);
+        int sumOfVotes = 0;
+        for(UserVotesRecord userVotesRecord:list){
+            sumOfVotes = sumOfVotes + userVotesRecord.getVotes();
+        }
+        if (sumOfVotes >= limit){
+            return new ResultContent(Constants.REQUEST_FAILED, "已达到每日投票上限", "{}");
+        } else {
+            UserVotesRecord userVotesRecord = new UserVotesRecord();
+            userVotesRecord.setWechatOpenid(openId);
+            userVotesRecord.setWorksUuid(worksId);
+            userVotesRecord.setVotingDate(dateStr);
+            userVotesRecord.setVotes(1);
+            userVotesRecord.setCreateTime(new Date());
+            userVotesRecord.setModifyTime(new Date());
+            userVotesRecordMapper.insert(userVotesRecord);
+        }
+
         //查询作品得票数
         WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
 
@@ -302,6 +385,9 @@ public class WorksServiceImpl {
     public ResultContent getWorksInfo(String worksId, String token) {
         logger.info("开始查询作品详情");
         WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+        if (null == worksInfo){
+            return new ResultContent(Constants.REQUEST_FAILED, "该作品不存在", "{}");
+        }
         String imageInfo = worksInfo.getImage();
         //获取图片URL
         List<String> imageUrlList = new ArrayList<>();
@@ -332,26 +418,33 @@ public class WorksServiceImpl {
         jsonObject.put("worksName", worksInfo.getWorksName());
         jsonObject.put("authorId", worksInfo.getAuthorId());
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-        jsonObject.put("phone", authorInfo.getPhone());
-        jsonObject.put("authorName", authorInfo.getAuthorName());
-        //查询作品得票数
-//        GiftRecord giftRecord = giftRecordMapper.selectByWorksId(worksInfo.getWorksUuid());//根据作品ID查询礼物赠送情况
-//        TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
-//        Integer votesNum = worksInfo.getNumberOfVotes() + typeOfGift.ge;
+        if (null != authorInfo){
+            jsonObject.put("phone", authorInfo.getPhone());
+            jsonObject.put("authorName", authorInfo.getAuthorName());
+        }else{
+            jsonObject.put("phone", "");
+            jsonObject.put("authorName", "");
+        }
+
         jsonObject.put("numberOfVotes", worksInfo.getNumberOfVotes());
         jsonObject.put("introductionOfWorks", worksInfo.getIntroductionOfWorks());
         jsonObject.put("imageUrl", imageUrlList);
         jsonObject.put("numOfClicks", worksInfo.getNumOfClicks());
         jsonObject.put("createTime", worksInfo.getCreateTime());
-
+        jsonObject.put("status", worksInfo.getStatus());
 
         //查询作品名次
-        //TODO 待验证
         Map<String, String > map = new HashMap<>();
         map.put("WorksId", worksId);
         map.put("activityId", worksInfo.getActivityId());
-//        int ranking = worksInfoMapper.selectRankingByWorksId(map);
-//        jsonObject.put("ranking", ranking);
+        List<WorksInfo> list = worksInfoMapper.selectWorksLeaderBoardByActivityId(worksInfo.getActivityId());
+        int ranking= 0;
+        for (int i = 0; i< list.size(); i++){
+            if (worksId.equals(list.get(i).getWorksUuid())){
+                ranking = i+1;
+            }
+        }
+        jsonObject.put("ranking", ranking);
 
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
@@ -370,6 +463,9 @@ public class WorksServiceImpl {
 
         Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                 worksInfoMapper.selectWorksLeaderBoardByActivityId(activityId));
+        if (null == page){
+            return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+        }
         List<WorksInfo> worksList = page.getResult();
         List<Map<String, Object>> worksInfoList = new ArrayList<>();
         for (WorksInfo worksInfo : worksList) {
@@ -378,7 +474,11 @@ public class WorksServiceImpl {
             map.put("worksId", worksInfo.getWorksUuid());
             map.put("votes", worksInfo.getNumberOfVotes());
             AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-            map.put("authorName", authorInfo.getAuthorName());
+            if (null != authorInfo){
+                map.put("authorName", authorInfo.getAuthorName());
+            }else{
+                map.put("authorName", "");
+            }
             worksInfoList.add(map);
         }
         return new ResultPage(Constants.REQUEST_SUCCESS, Constants.SUCCESS, worksInfoList,
@@ -399,11 +499,100 @@ public class WorksServiceImpl {
         worksInfo.setStatus(status);
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
 
-        if (result > 0) {
+        //开始发送消息
+        AuthorWorks authorWorks = authorWorksMapper.selectByWorksId(worksId);
+        String authorId = authorWorks.getAuthorId();
+        AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
+        String formId = authorInfo.getFormId();
+        String openId = authorInfo.getWechatOpenId();
+        String authorName = authorInfo.getAuthorName();
+        String msgResult = "";
+        if("1".equals(status)){
+            msgResult = "恭喜您作品已审核通过，敬请关注作品动态和投票结果";
+        }else{
+            msgResult = "作品未审核通过,如有疑问请联系:18676833933.";
+        }
+        ActivityInfo activityInfo = activityInfoMapper.selectActivityInfoByActivityId(authorInfo.getActivityId());
+        String activityName = activityInfo.getActivityName();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+        JSONObject jsonObject = getJsonDate(authorName, sdf.format(new Date()), msgResult, activityName);
+        System.out.println(jsonObject.toJSONString());
+        JSONObject resultObj = sendTemplateMessage(openId, "pages/home/main", "", formId, jsonObject);
+        if (result > 0 && resultObj.getInteger("errcode") == 0) {
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
         } else {
-            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+            return new ResultContent(Constants.REQUEST_FAILED, resultObj.getString("errmsg"), new JSONObject());
         }
+    }
+
+    /**
+     * 发送模板消息
+     * @param openId
+     * @param page
+     * @param emphasisKeyword
+     * @param formId
+     * @param date
+     * @return
+     */
+    public JSONObject sendTemplateMessage(String openId, String page, String emphasisKeyword, String formId, JSONObject date){
+
+        String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=";
+        StringBuilder sb = new StringBuilder();
+        String weChatToken = "";
+        if (redisUtil.exists("weChatToken")){
+            weChatToken = (String) redisUtil.get("weChatToken");
+        }else{
+            JSONObject tokenObject = getWeChatToken();
+            weChatToken = tokenObject.getString("access_token");
+        }
+        sb.append(url).append(weChatToken);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("touser", openId);
+        jsonObject.put("template_id", "wTWqmeNUHhqS1-o-pGY0gN3eHBF-RzNjKwFqD6-ICmE");
+        jsonObject.put("page", page);
+        jsonObject.put("form_id", formId);
+        jsonObject.put("data", date);
+        jsonObject.put("emphasis_keyword", emphasisKeyword);
+        JSONObject object = new JSONObject();
+        try{
+            object = JSON.parseObject(HttpClientUtil.httpsRequest(sb.toString(), "POST",jsonObject.toJSONString()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    private JSONObject getWeChatToken(){
+        String url = "https://api.weixin.qq.com/cgi-bin/token";
+        Map<String, String> params = new HashMap<>();
+        params.put("grant_type", "client_credential");
+        params.put("appid", appid);
+        params.put("secret", secret);
+        JSONObject object = new JSONObject();
+        try{
+            object = JSON.parseObject(HttpClientUtil.doGet(url, params));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        redisUtil.set("weChatToken", object.getString("access_token"), object.getLong("expires_in"));
+        return object;
+    }
+
+    private  JSONObject getJsonDate(String name, String date, String result, String activityName){
+        JSONObject json = new JSONObject();
+        JSONObject value1 = new JSONObject();
+        value1.put("value", name);
+        json.put("name",value1);
+        JSONObject value2 = new JSONObject();
+        value2.put("value", date);
+        json.put("date",value2);
+        JSONObject value3 = new JSONObject();
+        value3.put("value", result);
+        json.put("msg",value3);
+        JSONObject value4 = new JSONObject();
+        value4.put("value", activityName);
+        json.put("activityName",value4);
+        return json;
     }
 
     /**
@@ -468,6 +657,9 @@ public class WorksServiceImpl {
         for (ActivityInfo activityInfo : activityList) {
             Page<WorksInfo> page = PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(() ->
                     worksInfoMapper.selectWorksLeaderBoardByActivityId(activityInfo.getActivityId()));
+            if (null == page){
+                return new ResultPage(Constants.REQUEST_SUCCESS, "暂时没有参赛作品", "{}",1,1,1,1);
+            }
             Map<String, Object> map = new HashMap();
             List<WorksInfo> resultList = page.getResult();
             List<WorksList> list = new ArrayList<>();
@@ -475,7 +667,11 @@ public class WorksServiceImpl {
                 WorksList worksList = new WorksList();
                 worksList.setAuthorId(worksInfo.getAuthorId());
                 AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(worksInfo.getAuthorId());
-                worksList.setAuthorName(authorInfo.getAuthorName());
+                if (null != authorInfo){
+                    worksList.setAuthorName(authorInfo.getAuthorName());
+                }else{
+                    worksList.setAuthorName("");
+                }
                 worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
                 worksList.setWorksId(worksInfo.getWorksUuid());
                 worksList.setWorksName(worksInfo.getWorksName());

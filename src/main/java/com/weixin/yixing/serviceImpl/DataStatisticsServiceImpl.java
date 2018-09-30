@@ -1,14 +1,17 @@
 package com.weixin.yixing.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
+import com.weixin.yixing.config.RedisUtil;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.AuthorInfoMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
-import com.weixin.yixing.entity.WorksInfo;
+import com.weixin.yixing.utils.HttpClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -23,6 +26,15 @@ public class DataStatisticsServiceImpl {
 
     @Autowired
     private AuthorInfoMapper authorInfoMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
+
+    @Value("${appid}")
+    private String appid;
+
+    @Value("${secret}")
+    private String secret;
 
     /**
      * 数据统计查询
@@ -47,45 +59,76 @@ public class DataStatisticsServiceImpl {
     }
 
     /**
-     *
-     * @param activityId
+     *查询浏览量
      * @param year
      * @param month
      * @param token
      * @return
      */
-    /*TODO 逻辑错误*/
-    public ResultContent getViewsDistribute(String activityId, Integer year, Integer month, String token) {
+    public ResultContent getViewsDistribute(Integer year, Integer month, String token) {
         logger.info("开始进行点击量查询");
         Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1);//默认1月为0月
-        int day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        List<JSONObject> list = new ArrayList<>();
-        for (int i = day; i >= 0; i--) {
-            JSONObject jsonObject = new JSONObject();
-            calendar.add(Calendar.DATE, -i);
-            String dataStr = sdf.format(calendar.getTime());
-            Map<String, Object> map = new HashMap<>();
-            map.put("activityId",activityId);
-            map.put("currentDate",dataStr);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String endDate = "";
+        String beginDate = "";
+        int c = calendar.get(Calendar.MONTH) + 1;
+        if (c == month){
+//            calendar.add(Calendar.DATE, -1);
+//            endDate = sdf.format(calendar.getTime());
+//            calendar.add(Calendar.MONTH, 0);
+//            calendar.set(Calendar.DAY_OF_MONTH,1);
+//            beginDate = sdf.format(calendar.getTime());
+            return new ResultContent(Constants.REQUEST_SUCCESS, "微信当前仅支持整月查看数据", "");
+        }else{
+            calendar.clear();
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month - 1);//默认1月为0月
+            int day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            calendar.set(Calendar.DATE,day);
+            endDate = sdf.format(calendar.getTime());
+            calendar.add(Calendar.DATE,-day+1);
+            beginDate = sdf.format(calendar.getTime());
+        }
 
-            List<WorksInfo> worksInfoList = worksInfoMapper.selectClicksDataByDate(map);//TODO 计算clickNum
-            jsonObject.put("clickNum", 0);
-            jsonObject.put("date", dataStr);
-            list.add(jsonObject);
+
+        //获取微信accessToken
+        String weChatToken = "";
+        if (redisUtil.exists("weChatToken")){
+            weChatToken = (String) redisUtil.get("weChatToken");
+        }else{
+            JSONObject tokenObject = getWeChatToken();
+            weChatToken = tokenObject.getString("access_token");
         }
+
+        StringBuilder sb = new StringBuilder();
+        String url = "https://api.weixin.qq.com/datacube/getweanalysisappidmonthlyvisittrend?access_token=";
+        sb.append(url).append(weChatToken);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("begin_date", beginDate);
+        jsonObject.put("end_date", endDate);
         JSONObject object = new JSONObject();
-        if(list.size() > 0){
-            object.put("viewList", list);
-            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, object);
-        }else {
-            object.put("viewList", Collections.EMPTY_LIST);
-            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.IS_EMPTY, object);
+        try{
+            object = JSON.parseObject(HttpClientUtil.jsonPost(sb.toString(), jsonObject));
+        }catch (Exception e){
+            e.printStackTrace();
         }
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, object);
     }
 
+    private JSONObject getWeChatToken(){
+        String url = "https://api.weixin.qq.com/cgi-bin/token";
+        Map<String, String> params = new HashMap<>();
+        params.put("grant_type", "client_credential");
+        params.put("appid", appid);
+        params.put("secret", secret);
+        JSONObject object = new JSONObject();
+        try{
+            object = JSON.parseObject(HttpClientUtil.doGet(url, params));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        redisUtil.set("weChatToken", object.getString("access_token"), object.getLong("expires_in"));
+        return object;
+    }
 
 }

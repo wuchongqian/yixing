@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weixin.yixing.dao.UserVotesRecordMapper">
+  <resultMap id="BaseResultMap" type="com.weixin.yixing.entity.UserVotesRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="wechat_openid" jdbcType="VARCHAR" property="wechatOpenid" />
+    <result column="works_uuid" jdbcType="VARCHAR" property="worksUuid" />
+    <result column="votes" jdbcType="INTEGER" property="votes" />
+    <result column="voting_date" jdbcType="VARCHAR" property="votingDate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, wechat_openid, works_uuid, votes, voting_date, create_time, modify_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_votes_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByDate"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_votes_record
+    where wechat_openid = #{openId,jdbcType=VARCHAR}
+    and voting_date = #{dateStr,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByWorksId"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_votes_record
+    where wechat_openid = #{openId,jdbcType=VARCHAR}
+    and works_uuid = #{worksId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_votes_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.weixin.yixing.entity.UserVotesRecord">
+    insert into user_votes_record (id, wechat_openid, works_uuid, 
+      votes, voting_date, create_time, 
+      modify_time)
+    values (#{id,jdbcType=INTEGER}, #{wechatOpenid,jdbcType=VARCHAR}, #{worksUuid,jdbcType=VARCHAR}, 
+      #{votes,jdbcType=INTEGER}, #{votingDate,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.weixin.yixing.entity.UserVotesRecord">
+    insert into user_votes_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="wechatOpenid != null">
+        wechat_openid,
+      </if>
+      <if test="worksUuid != null">
+        works_uuid,
+      </if>
+      <if test="votes != null">
+        votes,
+      </if>
+      <if test="votingDate != null">
+        voting_date,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="wechatOpenid != null">
+        #{wechatOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="worksUuid != null">
+        #{worksUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="votes != null">
+        #{votes,jdbcType=INTEGER},
+      </if>
+      <if test="votingDate != null">
+        #{votingDate,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.weixin.yixing.entity.UserVotesRecord">
+    update user_votes_record
+    <set>
+      <if test="wechatOpenid != null">
+        wechat_openid = #{wechatOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="worksUuid != null">
+        works_uuid = #{worksUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="votes != null">
+        votes = #{votes,jdbcType=INTEGER},
+      </if>
+      <if test="votingDate != null">
+        voting_date = #{votingDate,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.weixin.yixing.entity.UserVotesRecord">
+    update user_votes_record
+    set wechat_openid = #{wechatOpenid,jdbcType=VARCHAR},
+      works_uuid = #{worksUuid,jdbcType=VARCHAR},
+      votes = #{votes,jdbcType=INTEGER},
+      voting_date = #{votingDate,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

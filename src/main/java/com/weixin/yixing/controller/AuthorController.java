@@ -1,6 +1,7 @@
 package com.weixin.yixing.controller;
 
 import com.commons.utils.ResultContent;
+import com.weixin.yixing.annotation.LoginRequired;
 import com.weixin.yixing.serviceImpl.AuthorServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,13 +21,15 @@ public class AuthorController {
 
     @ApiOperation(value="查询作者详情", notes="查询作者详情")
     @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "openId", value = "微信用户ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "activityId", value = "活动ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/getAuthorInfo", method = {RequestMethod.GET})
-    public ResultContent getAuthorInfo(String activityId, String authorId, String token) {
-        return authorServiceImpl.getAuthorInfo(activityId, authorId, token);
+    public ResultContent getAuthorInfo(String openId, String activityId, String authorId, String token) {
+        return authorServiceImpl.getAuthorInfo(openId, activityId, authorId, token);
     }
 
     @ApiOperation(value="PC端查询作者详情", notes="PC端查询作者详情")
@@ -34,6 +37,7 @@ public class AuthorController {
             @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/getAuthorInfoForPC", method = {RequestMethod.GET})
     public ResultContent getAuthorInfoForPC(String authorId, String token) {
         return authorServiceImpl.getAuthorInfoForPC(authorId, token);
@@ -41,12 +45,26 @@ public class AuthorController {
 
     @ApiOperation(value="喜欢作者", notes="喜欢作者")
     @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "openId", value = "微信用户ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/addLikeOfAuthor", method = {RequestMethod.GET})
-    public ResultContent addLikeOfAuthor(String authorId, String token) {
-        return authorServiceImpl.addLikeOfAuthor(authorId, token);
+    public ResultContent addLikeOfAuthor(String openId, String authorId, String token) {
+        return authorServiceImpl.addLikeOfAuthor(openId, authorId, token);
+    }
+
+    @ApiOperation(value="取消喜欢作者", notes="取消喜欢作者")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "openId", value = "微信用户ID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "authorId", value = "作者ID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
+    })
+    @LoginRequired
+    @RequestMapping(value = "/cancelLikeOfAuthor", method = {RequestMethod.GET})
+    public ResultContent cancelLikeOfAuthor(String openId, String authorId, String token) {
+        return authorServiceImpl.cancelLikeOfAuthor(openId, authorId, token);
     }
 
 }

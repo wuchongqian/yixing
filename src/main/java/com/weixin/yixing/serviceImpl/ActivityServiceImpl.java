@@ -2,10 +2,7 @@ package com.weixin.yixing.serviceImpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
-import com.commons.utils.ResultPage;
 import com.commons.utils.StringUtils;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.ActivityInfoMapper;
 import com.weixin.yixing.dao.AuthorInfoMapper;
@@ -15,6 +12,7 @@ import com.weixin.yixing.entity.ActivityInfo;
 import com.weixin.yixing.entity.AuthorInfo;
 import com.weixin.yixing.entity.AuthorWorks;
 import com.weixin.yixing.entity.WorksInfo;
+import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ActivityServiceImpl {
@@ -43,6 +38,8 @@ public class ActivityServiceImpl {
     @Autowired
     private AuthorWorksMapper authorWorksMapper;
 
+    @Autowired
+    private FileServiceImpl fileServiceImpl;
     /**
      *参加活动，上传作品
      * @param authorName
@@ -52,7 +49,7 @@ public class ActivityServiceImpl {
      * @param token
      * @return
      */
-    public ResultContent addRegisterInfo(String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList,String token) {
+    public ResultContent addRegisterInfo(String openId, String formId, String activityId, String authorName, String phone, String worksName, String introductionOfWorks, String imageIdList,String token) {
         logger.info("开始添加作品信息");
         if(StringUtils.isEmpty(activityId) ){
             return new ResultContent(Constants.REQUEST_FAILED, "activityId参数不能为空，请重新填写", "{}");
@@ -114,8 +111,11 @@ public class ActivityServiceImpl {
         authorInfo.setActivityId(activityId);
         authorInfo.setAuthorName(authorName);
         authorInfo.setPhone(phone);
+        authorInfo.setWechatOpenId(openId);
         authorInfo.setGender("0");
+        authorInfo.setFormId(formId);
         authorInfo.setCreateTime(new Date());
+        authorInfo.setModifyTime(new Date());
 
         authorInfo.setAuthorUuid(authorUuid);
         int authorResult = authorInfoMapper.insertSelective(authorInfo);
@@ -130,7 +130,7 @@ public class ActivityServiceImpl {
         authorWorks.setWorksId(worksUuid);
         authorWorks.setCreateTime(new Date());
         int authorWorksResult = authorWorksMapper.insertSelective(authorWorks);
-        if(authorResult <= 0){
+        if(authorWorksResult <= 0){
             return new ResultContent(Constants.REQUEST_FAILED, "新增作者作品关联信息错误", "{}");
         }
         JSONObject jsonObject = new JSONObject();
@@ -148,6 +148,18 @@ public class ActivityServiceImpl {
     public ResultContent getActivityInfo(String activityId, String token){
         logger.info("查询活动详情");
         ActivityInfo result = activityInfoMapper.selectActivityInfoByActivityId(activityId);
+        String imageId = result.getImage();
+        String imageUrl = "";
+        GetWidthResizedImageUrlRequest request = new GetWidthResizedImageUrlRequest();
+
+        request.setFileUuid(imageId);
+        request.setImageWidth(500);
+        ResultContent res = fileServiceImpl.getImageUrl(request);
+        if (res.getCode() == Constants.REQUEST_SUCCESS) {
+            Map<String, String> map = (Map<String, String>) res.getContent();
+            imageUrl = map.get("imageUrl");
+        }
+        result.setImage(imageUrl);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, result);
 
     }
@@ -163,6 +175,9 @@ public class ActivityServiceImpl {
     public ResultContent addActivityInfo(String activityName, String content, String imageId, String deadline, String token){
         logger.info("开始添加活动信息");
 
+        if(StringUtils.isEmpty(activityName) || StringUtils.isEmpty(content)||StringUtils.isEmpty(imageId)||StringUtils.isEmpty(deadline)){
+             return new ResultContent(Constants.REQUEST_FAILED, "参数不能为空", "{}");
+        }
         ActivityInfo activityInfo = new ActivityInfo();
         String activityUuid = UUID.randomUUID().toString();
         activityInfo.setActivityId(activityUuid);
@@ -190,6 +205,53 @@ public class ActivityServiceImpl {
         }else{
             return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, jsonObject);
         }
+    }
+
+    /**
+     * 编辑活动信息
+     * @param activityName
+     * @param content
+     * @param imageId
+     * @param deadline
+     * @param token
+     * @return
+     */
+    public ResultContent updateActivityInfo(String activityUuid, String activityName, String content, String imageId, String token){
+        logger.info("开始编辑活动信息");
+
+        ActivityInfo activityInfo = new ActivityInfo();
+        activityInfo.setActivityId(activityUuid);
+        activityInfo.setActivityName(activityName);
+        activityInfo.setIntroductionOfActivity(content);
+        activityInfo.setImage(imageId);
+        activityInfo.setModifyTime(new Date());
+
+        int result = activityInfoMapper.updateByPrimaryKeySelective(activityInfo);
+        JSONObject jsonObject = new JSONObject();
+        if (result>0){
+            jsonObject.put("activityUuid", activityUuid);
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
+        }else{
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, jsonObject);
+        }
+    }
+
+    /**
+     * 获取所有活动ID列表
+     * @param token
+     * @return
+     */
+    public ResultContent getActivityIdList(String token){
+        logger.info("开始获取活动ID列表");
+        JSONObject jsonObject = new JSONObject();
+        List<JSONObject>list = new ArrayList<>();
+        List<ActivityInfo> activityInfoList = activityInfoMapper.selectAllActivityInfo();
+        for (ActivityInfo activityInfo: activityInfoList){
+            jsonObject.put("activityUuid", activityInfo.getActivityId());
+            jsonObject.put("activityName", activityInfo.getActivityName());
+            list.add(jsonObject);
+        }
+        return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, list);
     }
 
     /**

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weixin.yixing.dao.UserAuthorRecordMapper">
+  <resultMap id="BaseResultMap" type="com.weixin.yixing.entity.UserAuthorRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="wechat_openid" jdbcType="VARCHAR" property="wechatOpenid" />
+    <result column="author_uuid" jdbcType="VARCHAR" property="authorUuid" />
+    <result column="like_status" jdbcType="CHAR" property="likeStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, wechat_openid, author_uuid, like_status, create_time, modify_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_author_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByWorksId"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_author_record
+    where wechat_openid = #{openId,jdbcType=VARCHAR}
+    and author_uuid = #{authorId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_author_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.weixin.yixing.entity.UserAuthorRecord">
+    insert into user_author_record (id, wechat_openid, author_uuid, 
+      like_status, create_time, modify_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{wechatOpenid,jdbcType=VARCHAR}, #{authorUuid,jdbcType=VARCHAR}, 
+      #{likeStatus,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.weixin.yixing.entity.UserAuthorRecord">
+    insert into user_author_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="wechatOpenid != null">
+        wechat_openid,
+      </if>
+      <if test="authorUuid != null">
+        author_uuid,
+      </if>
+      <if test="likeStatus != null">
+        like_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="wechatOpenid != null">
+        #{wechatOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="authorUuid != null">
+        #{authorUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="likeStatus != null">
+        #{likeStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.weixin.yixing.entity.UserAuthorRecord">
+    update user_author_record
+    <set>
+      <if test="wechatOpenid != null">
+        wechat_openid = #{wechatOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="authorUuid != null">
+        author_uuid = #{authorUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="likeStatus != null">
+        like_status = #{likeStatus,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where author_uuid = #{authorUuid,jdbcType=VARCHAR}
+    and wechat_openid = #{wechatOpenid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.weixin.yixing.entity.UserAuthorRecord">
+    update user_author_record
+    set wechat_openid = #{wechatOpenid,jdbcType=VARCHAR},
+      author_uuid = #{authorUuid,jdbcType=VARCHAR},
+      like_status = #{likeStatus,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -3,6 +3,7 @@ package com.weixin.yixing.serviceImpl;
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.commons.utils.ResultPage;
+import com.commons.utils.StringUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
@@ -56,10 +57,10 @@ public class GiftServiceImpl {
         Integer voteOfGift = typeOfGift.getVoteOfGift();
         WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
         Integer sum = voteOfGift + worksInfo.getNumberOfVotes();
-        WorksInfo newWokesInfo = new WorksInfo();
-        newWokesInfo.setWorksUuid(worksId);
-        newWokesInfo.setNumberOfVotes(sum);
-        int workResult = worksInfoMapper.updateByPrimaryKeySelective(newWokesInfo);
+        WorksInfo newWorksInfo = new WorksInfo();
+        newWorksInfo.setWorksUuid(worksId);
+        newWorksInfo.setNumberOfVotes(sum);
+        int workResult = worksInfoMapper.updateByPrimaryKeySelective(newWorksInfo);
         int result = giftRecordMapper.insert(giftRecord);
         if (result>0 && workResult>0){
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS,new JSONObject());
@@ -78,6 +79,10 @@ public class GiftServiceImpl {
      */
     public ResultPage  getGiftTrack(String worksId, String pageNum, String pageSize, String  token){
         logger.info("开始查询礼物赠送情况");
+        if(StringUtils.isEmpty(worksId)){
+            return new ResultPage(ResultContent.CODE_FAILED, "worksId参数不能为空", "{}",
+                    null, null, null, null);
+        }
         Page<GiftRecord> page=PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->giftRecordMapper.selectByWorksId(worksId));
         List<GiftRecord> giftRecords = page.getResult();
         List<Map<String, Object>> giftTrackList = new ArrayList<>();
