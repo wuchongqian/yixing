@@ -20,7 +20,6 @@ import java.io.IOException;
 
 @Api(value = "ActivityController", description = "活动接口")
 @RestController
-@CrossOrigin
 public class ActivityController {
     @Autowired
     private ActivityServiceImpl activityServiceImpl;
