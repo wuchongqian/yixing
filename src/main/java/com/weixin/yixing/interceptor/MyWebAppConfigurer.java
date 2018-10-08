@@ -1,6 +1,7 @@
 package com.weixin.yixing.interceptor;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -15,4 +16,12 @@ public class MyWebAppConfigurer extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**");
     }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowCredentials(true).maxAge(3600);
+    }
+
 }

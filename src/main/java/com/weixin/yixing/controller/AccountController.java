@@ -1,6 +1,5 @@
 package com.weixin.yixing.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.annotation.LoginRequired;
 import com.weixin.yixing.serviceImpl.AccountServiceImpl;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(value = "WeChatController", description = "微信接口")
 @RestController
-@CrossOrigin(origins = "http://134.175.14.126:8080",
-        maxAge = 3600)
 public class AccountController {
 
     @Autowired
