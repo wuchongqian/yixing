@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(value = "WeChatController", description = "微信接口")
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://134.175.14.126:8080",
+        maxAge = 3600)
 public class AccountController {
 
     @Autowired
