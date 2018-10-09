@@ -16,6 +16,8 @@ public class WorksList {
 
     private Integer numOfVotes;
 
+    private Integer numOfClicks;
+
     private String image;
 
     private String status;
@@ -82,5 +84,13 @@ public class WorksList {
 
     public void setWorksNum(String worksNum) {
         this.worksNum = worksNum;
+    }
+
+    public Integer getNumOfClicks() {
+        return numOfClicks;
+    }
+
+    public void setNumOfClicks(Integer numOfClicks) {
+        this.numOfClicks = numOfClicks;
     }
 }

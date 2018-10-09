@@ -94,6 +94,7 @@ public class WorksServiceImpl {
                 worksList.setAuthorName("");
             }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
+            worksList.setNumOfClicks(worksInfo.getNumOfClicks());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
             worksList.setStatus(worksInfo.getStatus());
@@ -143,6 +144,7 @@ public class WorksServiceImpl {
             }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
             worksList.setWorksId(worksInfo.getWorksUuid());
+            worksList.setNumOfClicks(worksInfo.getNumOfClicks());
             worksList.setWorksName(worksInfo.getWorksName());
             worksList.setStatus(worksInfo.getStatus());
             worksList.setWorksNum(worksInfo.getWorksNum());
@@ -279,6 +281,7 @@ public class WorksServiceImpl {
                 worksList.setAuthorName("");
             }
             worksList.setNumOfVotes(worksInfo.getNumberOfVotes());
+            worksList.setNumOfClicks(worksInfo.getNumOfClicks());
             worksList.setWorksId(worksInfo.getWorksUuid());
             worksList.setWorksName(worksInfo.getWorksName());
             worksList.setWorksNum(worksInfo.getWorksNum());
