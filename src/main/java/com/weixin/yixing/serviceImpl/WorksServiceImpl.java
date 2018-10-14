@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
 
@@ -722,14 +723,14 @@ public class WorksServiceImpl {
         return imageUrlList;
     }
 
-    public ResultContent uploadFile(MultipartFile file) {
+    public ResultContent uploadFile(@RequestParam(value = "file", required = false)MultipartFile file) {
         logger.info("开始执行上传文件服务");
 
         if (null == file) {
             return new ResultContent(Constants.REQUEST_FAILED, "文件不能为空", "");
         }
 
-        if (file.getSize() > 5 * 1048576) {
+        if (file.getSize() > 10 * 1048576) {
             return new ResultContent(Constants.REQUEST_FAILED, "上传文件大小不能超过5M", "");
         }
         String fileName = file.getOriginalFilename();

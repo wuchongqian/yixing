@@ -212,7 +212,6 @@ public class ActivityServiceImpl {
      * @param activityName
      * @param content
      * @param imageId
-     * @param deadline
      * @param token
      * @return
      */
