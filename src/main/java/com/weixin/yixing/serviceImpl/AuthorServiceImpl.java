@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.constants.Constants;
-import com.weixin.yixing.dao.ActivityInfoMapper;
-import com.weixin.yixing.dao.AuthorInfoMapper;
-import com.weixin.yixing.dao.UserAuthorRecordMapper;
-import com.weixin.yixing.dao.WorksInfoMapper;
+import com.weixin.yixing.dao.*;
 import com.weixin.yixing.entity.*;
 import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import com.weixin.yixing.exception.CoreException;
@@ -39,6 +36,9 @@ public class AuthorServiceImpl {
     @Autowired
     private UserAuthorRecordMapper userAuthorRecordMapper;
 
+    @Autowired
+    private WeChatUserMapper weChatUserMapper;
+
     /**
      * 查询作者详情
      * @param authorId
@@ -57,6 +57,13 @@ public class AuthorServiceImpl {
         author.setIntroductionOfAuthor(authorInfo.getIntroductionOfAuthor());
         author.setLike(authorInfo.getLikes());
         author.setPhone(authorInfo.getPhone());
+        WeChatUser weChatUser = weChatUserMapper.findByOpenid(authorInfo.getWechatOpenId());
+        if(null != weChatUser){
+            author.setAvatarUrl(weChatUser.getAvatarurl());
+        }else{
+            author.setAvatarUrl("");
+        }
+
         Integer sum = worksInfoMapper.getSumOfVotesByAuthorId(authorId);
         author.setSumOfVotes(sum.toString());
         Map<String, Object> map = new HashMap<>();
@@ -106,6 +113,12 @@ public class AuthorServiceImpl {
         author.setIntroductionOfAuthor(authorInfo.getIntroductionOfAuthor());
         author.setLike(authorInfo.getLikes());
         author.setPhone(authorInfo.getPhone());
+        WeChatUser weChatUser = weChatUserMapper.findByOpenid(authorInfo.getWechatOpenId());
+        if(null != weChatUser){
+            author.setAvatarUrl(weChatUser.getAvatarurl());
+        }else{
+            author.setAvatarUrl("");
+        }
         Integer sum = worksInfoMapper.getSumOfVotesByAuthorId(authorId);
         author.setSumOfVotes(sum.toString());
         List<Map<String, Object>>mapList = new ArrayList<>();

@@ -22,6 +22,16 @@ public class AuthorList {
 
     private String likeStatus;
 
+    private String avatarUrl;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     public String getAuthorUuid() {
         return authorUuid;
     }

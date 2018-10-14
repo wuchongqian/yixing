@@ -326,6 +326,16 @@ public class WorksServiceImpl {
         int result = authorInfoMapper.selectCountByActivityId(activityId);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("numOfRegistration", result);
+        List<AuthorInfo> authorInfoList = authorInfoMapper.selectByActivityId(activityId);
+        List<Map<String, Object>> avatarUrlList = new ArrayList<>();
+        for(AuthorInfo authorInfo: authorInfoList){
+            ;Map<String, Object>map = new HashMap<>();
+            WeChatUser weChatUser = weChatUserMapper.findByOpenid(authorInfo.getWechatOpenId());
+            map.put("avatarUrl", weChatUser.getAvatarurl());
+            map.put("nickName", weChatUser.getNickName());
+            avatarUrlList.add(map);
+        }
+        jsonObject.put("avatarUrlList", avatarUrlList);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
 
@@ -426,9 +436,17 @@ public class WorksServiceImpl {
         if (null != authorInfo){
             jsonObject.put("phone", authorInfo.getPhone());
             jsonObject.put("authorName", authorInfo.getAuthorName());
+            String openId = authorInfo.getWechatOpenId();
+            WeChatUser weChatUser = weChatUserMapper.findByOpenid(openId);
+            if(null != weChatUser){
+                jsonObject.put("avatarUrl",weChatUser.getAvatarurl());
+            }else {
+                jsonObject.put("avatarUrl","");
+            }
         }else{
             jsonObject.put("phone", "");
             jsonObject.put("authorName", "");
+            jsonObject.put("avatarUrl","");
         }
 
         jsonObject.put("numberOfVotes", worksInfo.getNumberOfVotes());

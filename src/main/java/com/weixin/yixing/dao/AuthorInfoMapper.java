@@ -17,6 +17,8 @@ public interface AuthorInfoMapper {
 
     List<AuthorInfo> selectAuthorInfoByPhone(String phone);
 
+    List<AuthorInfo>selectByActivityId(String activityId);
+
     int selectCountByActivityId(String activityId);
 
     int updateByPrimaryKeySelective(AuthorInfo record);
