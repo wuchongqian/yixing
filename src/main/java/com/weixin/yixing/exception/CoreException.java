@@ -47,6 +47,9 @@ public class CoreException extends RuntimeException{
     public static final String[] ACCOUNT_PASSOWRD_ERROR = {"1001", "account_password_error", "密码错误"};
     public static final String[] ACCOUNT_EXIST_ALREADY = {"1002", "account_exist_already", "此账号已存在"};
 
+    //内容相关，以20开头
+    public static final String[] ACTIVITY_NOT_EXIST = {"2001", "activity_not_exist", "活动不存在"};
+
     private String code = "1";//是否成功标志
     private String key = "";//错误key
     private String message = "";//错误消息

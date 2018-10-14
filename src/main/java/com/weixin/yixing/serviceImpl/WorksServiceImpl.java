@@ -14,6 +14,7 @@ import com.weixin.yixing.dao.*;
 import com.weixin.yixing.entity.*;
 import com.weixin.yixing.entity.vo.GetWidthResizedImageUrlRequest;
 import com.weixin.yixing.entity.vo.UploadFileByStringBase64Request;
+import com.weixin.yixing.exception.CoreException;
 import com.weixin.yixing.utils.HttpClientUtil;
 import com.weixin.yixing.utils.ImageVerifyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -501,7 +502,7 @@ public class WorksServiceImpl {
         WorksInfo worksInfo = new WorksInfo();
         worksInfo.setWorksUuid(worksId);
         worksInfo.setStatus(status);
-        int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
+
 
         //开始发送消息
         AuthorWorks authorWorks = authorWorksMapper.selectByWorksId(worksId);
@@ -517,11 +518,16 @@ public class WorksServiceImpl {
             msgResult = "作品未审核通过,如有疑问请联系:18676833933.";
         }
         ActivityInfo activityInfo = activityInfoMapper.selectActivityInfoByActivityId(authorInfo.getActivityId());
+        if(null == activityInfo){
+            throw  CoreException.of(CoreException.ACTIVITY_NOT_EXIST);
+        }
         String activityName = activityInfo.getActivityName();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         JSONObject jsonObject = getJsonDate(authorName, sdf.format(new Date()), msgResult, activityName);
         System.out.println(jsonObject.toJSONString());
         JSONObject resultObj = sendTemplateMessage(openId, "pages/home/main", "", formId, jsonObject);
+        //更新审核状态
+        int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
         if (result > 0 && resultObj.getInteger("errcode") == 0) {
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
         } else {
