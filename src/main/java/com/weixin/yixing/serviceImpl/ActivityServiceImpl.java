@@ -149,17 +149,27 @@ public class ActivityServiceImpl {
         logger.info("查询活动详情");
         ActivityInfo result = activityInfoMapper.selectActivityInfoByActivityId(activityId);
         String imageId = result.getImage();
+        String contentId = result.getIntroductionOfActivity();
         String imageUrl = "";
+        String introductionUrl = "";
         GetWidthResizedImageUrlRequest request = new GetWidthResizedImageUrlRequest();
-
         request.setFileUuid(imageId);
         request.setImageWidth(500);
+        GetWidthResizedImageUrlRequest contentRequest = new GetWidthResizedImageUrlRequest();
+        contentRequest.setFileUuid(contentId);
+        contentRequest.setImageWidth(500);
         ResultContent res = fileServiceImpl.getImageUrl(request);
+        ResultContent contentRes = fileServiceImpl.getImageUrl(contentRequest);
         if (res.getCode() == Constants.REQUEST_SUCCESS) {
             Map<String, String> map = (Map<String, String>) res.getContent();
             imageUrl = map.get("imageUrl");
         }
+        if (contentRes.getCode() == Constants.REQUEST_SUCCESS) {
+            Map<String, String> map = (Map<String, String>) contentRes.getContent();
+            introductionUrl = map.get("imageUrl");
+        }
         result.setImage(imageUrl);
+        result.setIntroductionOfActivity(introductionUrl);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, result);
 
     }
