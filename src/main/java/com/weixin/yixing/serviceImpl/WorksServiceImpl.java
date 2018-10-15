@@ -329,7 +329,7 @@ public class WorksServiceImpl {
         List<AuthorInfo> authorInfoList = authorInfoMapper.selectByActivityId(activityId);
         List<Map<String, Object>> avatarUrlList = new ArrayList<>();
         for(AuthorInfo authorInfo: authorInfoList){
-            ;Map<String, Object>map = new HashMap<>();
+            Map<String, Object>map = new HashMap<>();
             WeChatUser weChatUser = weChatUserMapper.findByOpenid(authorInfo.getWechatOpenId());
             map.put("avatarUrl", weChatUser.getAvatarurl());
             map.put("nickName", weChatUser.getNickName());

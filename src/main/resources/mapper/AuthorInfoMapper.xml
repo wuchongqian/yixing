@@ -43,7 +43,7 @@
     where activity_id = #{activityId,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectByActivityId" parameterType="java.lang.String" resultType="Integer">
+  <select id="selectByActivityId"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from author_info
