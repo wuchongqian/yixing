@@ -526,8 +526,8 @@ public class WorksServiceImpl {
         AuthorWorks authorWorks = authorWorksMapper.selectByWorksId(worksId);
         String authorId = authorWorks.getAuthorId();
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
-//        String formId = authorInfo.getFormId();
-        String formId = "d5ebc65a65cb9e6a6eeab0d276099ee9";
+        String formId = authorInfo.getFormId();
+//        String formId = "d5ebc65a65cb9e6a6eeab0d276099ee9";
         String openId = authorInfo.getWechatOpenId();
         String authorName = authorInfo.getAuthorName();
         String msgResult = "";
