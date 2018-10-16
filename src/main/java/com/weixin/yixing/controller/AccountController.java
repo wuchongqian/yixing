@@ -33,12 +33,10 @@ public class AccountController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "openId", value = "微信OPENID", required = true, dataType = "String"),
             @ApiImplicitParam(paramType="query", name = "rawData", value = "微信账号信息字符串", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType="query", name = "token", value = "token", required = true, dataType = "String"),
     })
-    @LoginRequired
     @RequestMapping(value = "/updateWeChatUserInfo", method = {RequestMethod.POST})
-    public ResultContent updateWeChatUserInfo(String openId, String rawData, String token) {
-        return accountServiceImpl.updateWeChatUserInfo(openId, rawData, token);
+    public ResultContent updateWeChatUserInfo(String openId, String rawData) {
+        return accountServiceImpl.updateWeChatUserInfo(openId, rawData);
     }
 
     @ApiOperation(value="获取最新活动信息", notes="获取最新活动信息")
