@@ -755,7 +755,7 @@ public class WorksServiceImpl {
         }
 
         if (file.getSize() > 10 * 1048576) {
-            return new ResultContent(Constants.REQUEST_FAILED, "上传文件大小不能超过5M", "");
+            return new ResultContent(Constants.REQUEST_FAILED, "上传文件大小不能超过10M", "");
         }
         String fileName = file.getOriginalFilename();
 
