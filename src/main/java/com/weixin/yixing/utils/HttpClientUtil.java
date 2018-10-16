@@ -362,6 +362,4 @@ public class HttpClientUtil {
         }
         return null;
     }
-
-
 }

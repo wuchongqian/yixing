@@ -526,7 +526,8 @@ public class WorksServiceImpl {
         AuthorWorks authorWorks = authorWorksMapper.selectByWorksId(worksId);
         String authorId = authorWorks.getAuthorId();
         AuthorInfo authorInfo = authorInfoMapper.selectAuthorInfoByAuthorId(authorId);
-        String formId = authorInfo.getFormId();
+//        String formId = authorInfo.getFormId();
+        String formId = "d5ebc65a65cb9e6a6eeab0d276099ee9";
         String openId = authorInfo.getWechatOpenId();
         String authorName = authorInfo.getAuthorName();
         String msgResult = "";
@@ -559,10 +560,10 @@ public class WorksServiceImpl {
      * @param page
      * @param emphasisKeyword
      * @param formId
-     * @param date
+     * @param data
      * @return
      */
-    public JSONObject sendTemplateMessage(String openId, String page, String emphasisKeyword, String formId, JSONObject date){
+    public JSONObject sendTemplateMessage(String openId, String page, String emphasisKeyword, String formId, JSONObject data){
 
         String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=";
         StringBuilder sb = new StringBuilder();
@@ -579,7 +580,7 @@ public class WorksServiceImpl {
         jsonObject.put("template_id", "wTWqmeNUHhqS1-o-pGY0gN3eHBF-RzNjKwFqD6-ICmE");
         jsonObject.put("page", page);
         jsonObject.put("form_id", formId);
-        jsonObject.put("data", date);
+        jsonObject.put("data", data);
         jsonObject.put("emphasis_keyword", emphasisKeyword);
         JSONObject object = new JSONObject();
         try{
@@ -610,16 +611,16 @@ public class WorksServiceImpl {
         JSONObject json = new JSONObject();
         JSONObject value1 = new JSONObject();
         value1.put("value", name);
-        json.put("name",value1);
+        json.put("keyword1",value1);
         JSONObject value2 = new JSONObject();
         value2.put("value", date);
-        json.put("date",value2);
+        json.put("keyword2",value2);
         JSONObject value3 = new JSONObject();
         value3.put("value", result);
-        json.put("msg",value3);
+        json.put("keyword3",value3);
         JSONObject value4 = new JSONObject();
         value4.put("value", activityName);
-        json.put("activityName",value4);
+        json.put("keyword4",value4);
         return json;
     }
 
