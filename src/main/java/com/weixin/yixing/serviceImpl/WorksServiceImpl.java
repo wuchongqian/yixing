@@ -347,7 +347,7 @@ public class WorksServiceImpl {
      * @return
      */
     public ResultContent addNumOfVotesOnce(String openId,String worksId, String token) {
-        logger.info("开始投票");
+        logger.info("开始投票, " +"openid:" + openId + ", worksId:" + worksId);
 
         //查询是否超过投票限制
         WeChatUser weChatUser = weChatUserMapper.findByOpenid(openId);
