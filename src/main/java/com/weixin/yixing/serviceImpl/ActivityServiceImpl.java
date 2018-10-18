@@ -70,10 +70,10 @@ public class ActivityServiceImpl {
         if(StringUtils.isEmpty(imageIdList)){
             return new ResultContent(Constants.REQUEST_FAILED, "imageIdList参数不能为空，请重新填写", "{}");
         }
-//        List<AuthorInfo> authors = authorInfoMapper.selectAuthorInfoByPhone(phone);
-//        if(authors.size()>0){
-//
-//        }
+
+        AuthorWorks authorWorks = new AuthorWorks();
+        JSONObject jsonObject = new JSONObject();
+
         //添加作品
         WorksInfo works = new WorksInfo();
         works.setActivityId(activityId);
@@ -97,46 +97,55 @@ public class ActivityServiceImpl {
         works.setWorksNum(worksNo);
         works.setCreateTime(new Date());
         works.setModifyTime(new Date());
-        works.setAuthorId(authorUuid);
 
         //图片信息
         works.setImage(imageIdList);
         works.setStatus("0");
+
+
+        //作者表插值
+
+        Map map = new HashMap();
+        map.put("phone", phone);
+        map.put("activityId", activityId);
+        AuthorInfo author = authorInfoMapper.selectAuthorInfoByPhoneAndActivityId(map);
+        if (null == author){
+            AuthorInfo authorInfo = new AuthorInfo();
+            authorInfo.setActivityId(activityId);
+            authorInfo.setAuthorName(authorName);
+            authorInfo.setPhone(phone);
+            authorInfo.setWechatOpenId(openId);
+            authorInfo.setGender("0");
+            authorInfo.setFormId(formId);
+            authorInfo.setCreateTime(new Date());
+            authorInfo.setModifyTime(new Date());
+            authorInfo.setAuthorUuid(authorUuid);
+            authorWorks.setAuthorId(authorUuid);
+            jsonObject.put("authorId", authorUuid);
+            int authorResult = authorInfoMapper.insertSelective(authorInfo);
+            if(authorResult <= 0){
+                return new ResultContent(Constants.REQUEST_FAILED, "新增作者信息错误", "{}");
+            }
+        }else{
+            works.setAuthorId(author.getAuthorUuid());
+            authorWorks.setAuthorId(author.getAuthorUuid());
+            jsonObject.put("authorId", author.getAuthorUuid());
+        }
+
         int worksResult = worksInfoMapper.insertSelective(works);
         if (worksResult<=0){
             return new ResultContent(Constants.REQUEST_FAILED, "新增作品信息错误", "{}");
         }
-
-        //作者表插值
-        AuthorInfo authorInfo = new AuthorInfo();
-        authorInfo.setActivityId(activityId);
-        authorInfo.setAuthorName(authorName);
-        authorInfo.setPhone(phone);
-        authorInfo.setWechatOpenId(openId);
-        authorInfo.setGender("0");
-        authorInfo.setFormId(formId);
-        authorInfo.setCreateTime(new Date());
-        authorInfo.setModifyTime(new Date());
-
-        authorInfo.setAuthorUuid(authorUuid);
-        int authorResult = authorInfoMapper.insertSelective(authorInfo);
-        if(authorResult <= 0){
-            return new ResultContent(Constants.REQUEST_FAILED, "新增作者信息错误", "{}");
-        }
-
-
         //作者和作品关联关系表
-        AuthorWorks authorWorks = new AuthorWorks();
-        authorWorks.setAuthorId(authorUuid);
+
         authorWorks.setWorksId(worksUuid);
         authorWorks.setCreateTime(new Date());
         int authorWorksResult = authorWorksMapper.insertSelective(authorWorks);
         if(authorWorksResult <= 0){
             return new ResultContent(Constants.REQUEST_FAILED, "新增作者作品关联信息错误", "{}");
         }
-        JSONObject jsonObject = new JSONObject();
+
         jsonObject.put("worksId", worksUuid);
-        jsonObject.put("authorId", authorUuid);
         return  new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
 

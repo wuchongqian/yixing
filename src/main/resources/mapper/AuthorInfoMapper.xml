@@ -57,6 +57,14 @@
     where phone = #{phone,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectAuthorInfoByPhoneAndActivityId"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from author_info
+    where phone = #{phone,jdbcType=VARCHAR}
+    and activity_id = #{activityId,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from author_info
     where id = #{id,jdbcType=INTEGER}

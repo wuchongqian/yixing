@@ -3,6 +3,7 @@ package com.weixin.yixing.dao;
 import com.weixin.yixing.entity.AuthorInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AuthorInfoMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,6 +17,8 @@ public interface AuthorInfoMapper {
     AuthorInfo selectAuthorInfoByAuthorId(String authorUuid);
 
     List<AuthorInfo> selectAuthorInfoByPhone(String phone);
+
+    AuthorInfo selectAuthorInfoByPhoneAndActivityId(Map map);
 
     List<AuthorInfo>selectByActivityId(String activityId);
 
