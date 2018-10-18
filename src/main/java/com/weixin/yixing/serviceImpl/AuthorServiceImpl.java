@@ -224,6 +224,9 @@ public class AuthorServiceImpl {
         if (null == author){
             throw CoreException.of(CoreException.RESOURCE_NO_FOUND);
         }
+        if (author.getLikes() == 0){
+            return new ResultContent(Constants.REQUEST_SUCCESS, "喜欢数为0，无法取消", new JSONObject());
+        }
         AuthorInfo authorInfo = new AuthorInfo();
         authorInfo.setAuthorUuid(authorId);
         authorInfo.setLikes(author.getLikes() - 1);
