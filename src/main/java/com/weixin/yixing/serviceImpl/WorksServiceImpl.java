@@ -363,7 +363,7 @@ public class WorksServiceImpl {
             sumOfVotes = sumOfVotes + userVotesRecord.getVotes();
         }
         if (sumOfVotes >= limit){
-            return new ResultContent(Constants.REQUEST_FAILED, "已达到每日投票上限", "{}");
+            return new ResultContent(Constants.REQUEST_FAILED, "已达到每日投票上限，转发给朋友帮忙投票或送礼物获得票数", "{}");
         } else {
             UserVotesRecord userVotesRecord = new UserVotesRecord();
             userVotesRecord.setWechatOpenid(openId);
