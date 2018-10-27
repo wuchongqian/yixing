@@ -1,10 +1,6 @@
 package com.weixin.yixing.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,6 +11,10 @@ import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -182,6 +182,30 @@ public class PayUtils {
         }
         return result;
     }
+
+    public static Map doXMLParse(String notityXml) {
+        String result = notityXml;
+        Map<String, String> map = new HashMap();
+        InputStream in = new ByteArrayInputStream(result.getBytes());
+        // 读取输入流
+        SAXReader reader = new SAXReader();
+        Element root = null;
+        try {
+            Document document = reader.read(in);
+            root = document.getRootElement();
+        }catch (DocumentException e){
+            e.printStackTrace();
+        }
+        // 得到xml根元素
+
+        // 得到根元素的所有子节点
+        @SuppressWarnings("unchecked")
+        List<Element> elementList = root.elements();
+        for (Element element : elementList) {
+            map.put(element.getName(), element.getText());
+        }
+        return map;
+    }
     /**
      * IpUtils工具类方法
      * 获取真实的ip地址
@@ -205,4 +229,5 @@ public class PayUtils {
         }
         return request.getRemoteAddr();
     }
+
 }

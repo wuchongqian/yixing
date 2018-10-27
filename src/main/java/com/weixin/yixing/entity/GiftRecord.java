@@ -13,6 +13,8 @@ public class GiftRecord {
 
     private Integer giftId;
 
+    private String outTradeNo;
+
     private Date createTime;
 
     private Date modifyTime;
@@ -55,6 +57,14 @@ public class GiftRecord {
 
     public void setGiftId(Integer giftId) {
         this.giftId = giftId;
+    }
+
+    public String getOutTradeNo() {
+        return outTradeNo;
+    }
+
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo == null ? null : outTradeNo.trim();
     }
 
     public Date getCreateTime() {

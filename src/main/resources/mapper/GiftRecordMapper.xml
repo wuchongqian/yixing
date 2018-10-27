@@ -7,11 +7,12 @@
     <result column="presenter_name" jdbcType="VARCHAR" property="presenterName" />
     <result column="work_id" jdbcType="VARCHAR" property="workId" />
     <result column="gift_id" jdbcType="INTEGER" property="giftId" />
+    <result column="out_trade_no" jdbcType="VARCHAR" property="outTradeNo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, presenter_id, presenter_name, work_id, gift_id, create_time, modify_time
+    id, presenter_id, presenter_name, work_id, gift_id, out_trade_no, create_time, modify_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -25,11 +26,11 @@
   </delete>
   <insert id="insert" parameterType="com.weixin.yixing.entity.GiftRecord">
     insert into gift_record (id, presenter_id, presenter_name, 
-      work_id, gift_id, create_time, 
-      modify_time)
+      work_id, gift_id, out_trade_no, 
+      create_time, modify_time)
     values (#{id,jdbcType=INTEGER}, #{presenterId,jdbcType=VARCHAR}, #{presenterName,jdbcType=VARCHAR}, 
-      #{workId,jdbcType=VARCHAR}, #{giftId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{modifyTime,jdbcType=TIMESTAMP})
+      #{workId,jdbcType=VARCHAR}, #{giftId,jdbcType=INTEGER}, #{outTradeNo,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.weixin.yixing.entity.GiftRecord">
     insert into gift_record
@@ -48,6 +49,9 @@
       </if>
       <if test="giftId != null">
         gift_id,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
       </if>
       <if test="createTime != null">
         create_time,
@@ -72,6 +76,9 @@
       <if test="giftId != null">
         #{giftId,jdbcType=INTEGER},
       </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -95,6 +102,9 @@
       <if test="giftId != null">
         gift_id = #{giftId,jdbcType=INTEGER},
       </if>
+      <if test="outTradeNo != null">
+        out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -110,11 +120,11 @@
       presenter_name = #{presenterName,jdbcType=VARCHAR},
       work_id = #{workId,jdbcType=VARCHAR},
       gift_id = #{giftId,jdbcType=INTEGER},
+      out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
   <select id="selectByWorksId"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

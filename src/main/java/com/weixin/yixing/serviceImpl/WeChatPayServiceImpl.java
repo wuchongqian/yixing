@@ -1,6 +1,5 @@
 package com.weixin.yixing.serviceImpl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.constants.Constants;
@@ -92,8 +91,9 @@ public class WeChatPayServiceImpl {
         String today = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String code = PayUtils.createCode(8);
         String out_trade_no = today + code;//商户订单号
+        giftRecord.setOutTradeNo(out_trade_no);
         String spbill_create_ip = "127.0.0.1";//终端IP  PayUtils.getIpAddr(request)
-        String notify_url = "https://www.qingheyixing.com/weChatPay";//通知地址
+        String notify_url = "https://www.qingheyixing.com/wxNotify";//通知地址
         String trade_type = "JSAPI";//交易类型
 
         /**/
@@ -189,56 +189,57 @@ public class WeChatPayServiceImpl {
         return new ResultContent(Constants.REQUEST_SUCCESS, map.get("return_msg"), jsonObject);
     }
 
-//    /**
-//     * @Description:微信支付
-//     * @return
-//     * @throws Exception
-//     */
+    /**
+     * @Description:微信支付
+     * @return
+     * @throws Exception
+     */
 //    @RequestMapping(value="/wxNotify")
 //    @ResponseBody
-//    public void wxNotify(HttpServletRequest request,HttpServletResponse response) throws Exception{
-//        BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream)request.getInputStream()));
-//        String line = null;
-//        StringBuilder sb = new StringBuilder();
-//        while((line = br.readLine()) != null){
-//            sb.append(line);
-//        }
-//        br.close();
-//        //sb为微信返回的xml
-//        String notityXml = sb.toString();
-//        String resXml = "";
-//        System.out.println("接收到的报文：" + notityXml);
-//
-//        Map map = PayUtils.doXMLParse(notityXml);
-//
-//        String returnCode = (String) map.get("return_code");
-//        if("SUCCESS".equals(returnCode)){
-//            //验证签名是否正确
-//            Map<String, String> validParams = PayUtil.paraFilter(map);  //回调验签时需要去除sign和空值参数
-//            String validStr = PayUtil.createLinkString(validParams);//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
-//            String sign = PayUtil.sign(validStr, WxPayConfig.key, "utf-8").toUpperCase();//拼装生成服务器端验证的签名
-//            //根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
-//            if(sign.equals(map.get("sign"))){
-//                /**此处添加自己的业务逻辑代码start**/
-//
-//
-//                /**此处添加自己的业务逻辑代码end**/
-//                //通知微信服务器已经支付成功
-//                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
-//                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
-//            }
-//        }else{
-//            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
-//                    + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
-//        }
-//        System.out.println(resXml);
-//        System.out.println("微信支付回调数据结束");
-//
-//
-//        BufferedOutputStream out = new BufferedOutputStream(
-//                response.getOutputStream());
-//        out.write(resXml.getBytes());
-//        out.flush();
-//        out.close();
-//    }
+    public void wxNotify(HttpServletRequest request,HttpServletResponse response) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream)request.getInputStream()));
+        String line = null;
+        StringBuilder sb = new StringBuilder();
+        while((line = br.readLine()) != null){
+            sb.append(line);
+        }
+        br.close();
+        //sb为微信返回的xml
+        String notityXml = sb.toString();
+        String resXml = "";
+        System.out.println("接收到的报文：" + notityXml);
+
+        Map map = PayUtils.doXMLParse(notityXml);
+
+        String returnCode = (String) map.get("return_code");
+        if("SUCCESS".equals(returnCode)){
+            //验证签名是否正确
+            Map<String, String> validParams = PayUtils.paraFilter(map);  //回调验签时需要去除sign和空值参数
+            String validStr = PayUtils.createLinkString(validParams);//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+            String sign = PayUtils.sign(validStr, "&key=" + apikey, "utf-8").toUpperCase();//拼装生成服务器端验证的签名
+            //根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
+            if(sign.equals(map.get("sign"))){
+                /**此处添加自己的业务逻辑代码start**/
+                String fee = (String)map.get("total_fee");
+                String outTradeNo = (String)map.get("out_trade_no");
+                //TODO 逻辑完善
+
+                /**此处添加自己的业务逻辑代码end**/
+                //通知微信服务器已经支付成功
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+            }
+        }else{
+            resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
+                    + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
+        }
+        System.out.println(resXml);
+        System.out.println("微信支付回调数据结束");
+
+        BufferedOutputStream out = new BufferedOutputStream(
+                response.getOutputStream());
+        out.write(resXml.getBytes());
+        out.flush();
+        out.close();
+    }
 }
