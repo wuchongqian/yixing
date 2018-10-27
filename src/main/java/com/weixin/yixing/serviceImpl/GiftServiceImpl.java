@@ -9,9 +9,11 @@ import com.github.pagehelper.PageHelper;
 import com.weixin.yixing.constants.Constants;
 import com.weixin.yixing.dao.GiftRecordMapper;
 import com.weixin.yixing.dao.TypeOfGiftMapper;
+import com.weixin.yixing.dao.WeChatUserMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
 import com.weixin.yixing.entity.GiftRecord;
 import com.weixin.yixing.entity.TypeOfGift;
+import com.weixin.yixing.entity.WeChatUser;
 import com.weixin.yixing.entity.WorksInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,9 @@ public class GiftServiceImpl {
 
     @Autowired
     private WorksInfoMapper worksInfoMapper;
+
+    @Autowired
+    private WeChatUserMapper weChatUserMapper;
 
     /**
      * 赠送礼物
@@ -91,6 +96,11 @@ public class GiftServiceImpl {
             for (GiftRecord giftRecord: giftRecords){
                 Map<String, Object> map = new HashMap();
                 map.put("presenterName",giftRecord.getPresenterName());
+                //获取赠送人头像url
+                WeChatUser weChatUser = weChatUserMapper.findByOpenid(giftRecord.getPresenterId());
+                String url = weChatUser.getAvatarurl();
+                map.put("avatarUrl", url);
+                //获取礼物信息
                 TypeOfGift typeOfGift =typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
                 map.put("giftName",typeOfGift.getTypeName());
                 map.put("voteOfGift",typeOfGift.getVoteOfGift());

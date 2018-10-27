@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Api(value = "WeChatController", description = "微信接口")
 @RestController
@@ -86,5 +87,13 @@ public class AccountController {
     public ResultContent weChatPay(String openid, HttpServletRequest request,String giftId, String worksId, String token) throws Exception{
         return weChatPayServiceImpl.weChatPay(openid, request, giftId, worksId, token);
     }
+
+//    @ApiOperation(value="微信支付回调", notes="微信回调")
+//    @ApiImplicitParams({
+//    })
+//    @RequestMapping(value = "/wxNotify", method = {RequestMethod.POST})
+//    public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
+//       weChatPayServiceImpl.wxNotify(request,response);
+//    }
 
 }

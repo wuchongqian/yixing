@@ -132,5 +132,10 @@
     where work_id = #{worksId,jdbcType=VARCHAR}
     ORDER By create_time DESC
   </select>
-
+  <select id="selectByOutTradeNo"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gift_record
+    where out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

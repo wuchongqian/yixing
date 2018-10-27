@@ -20,6 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +65,7 @@ public class WeChatPayServiceImpl {
     private String time_expire;//交易结束时间
 
     public ResultContent weChatPay(String openid, HttpServletRequest request, String giftId, String worksId, String token) throws Exception {
+        logger.info("开始礼物赠送支付: "+"openid-"+ openid+", giftId-"+ giftId + ", worksId-"+ worksId + ", token-" + token);
 
         GiftRecord giftRecord = new GiftRecord();
         giftRecord.setGiftId(Integer.valueOf(giftId));
@@ -92,7 +97,7 @@ public class WeChatPayServiceImpl {
         String code = PayUtils.createCode(8);
         String out_trade_no = today + code;//商户订单号
         giftRecord.setOutTradeNo(out_trade_no);
-        String spbill_create_ip = "127.0.0.1";//终端IP  PayUtils.getIpAddr(request)
+        String spbill_create_ip = PayUtils.getIpAddr(request);//终端IP  PayUtils.getIpAddr(request)
         String notify_url = "https://www.qingheyixing.com/wxNotify";//通知地址
         String trade_type = "JSAPI";//交易类型
 
@@ -194,9 +199,9 @@ public class WeChatPayServiceImpl {
      * @return
      * @throws Exception
      */
-//    @RequestMapping(value="/wxNotify")
-//    @ResponseBody
-    public void wxNotify(HttpServletRequest request,HttpServletResponse response) throws Exception{
+    @RequestMapping(value="/wxNotify")
+    @ResponseBody
+    public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream)request.getInputStream()));
         String line = null;
         StringBuilder sb = new StringBuilder();
@@ -222,12 +227,19 @@ public class WeChatPayServiceImpl {
                 /**此处添加自己的业务逻辑代码start**/
                 String fee = (String)map.get("total_fee");
                 String outTradeNo = (String)map.get("out_trade_no");
-                //TODO 逻辑完善
-
-                /**此处添加自己的业务逻辑代码end**/
-                //通知微信服务器已经支付成功
-                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
-                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+                GiftRecord giftRecord = giftRecordMapper.selectByOutTradeNo(outTradeNo);
+                Integer giftId = giftRecord.getGiftId();
+                TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(Integer.valueOf(giftId));
+                Integer valueOfGift = typeOfGift.getValueOfGift();
+                String money = String.valueOf(valueOfGift);
+                if (fee.equals(money)){
+                    //通知微信服务器已经支付成功
+                    resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                            + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+                }else{
+                    resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
+                            + "<return_msg><![CDATA[金额错误]]></return_msg>" + "</xml> ";
+                }
             }
         }else{
             resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
@@ -242,4 +254,12 @@ public class WeChatPayServiceImpl {
         out.flush();
         out.close();
     }
+
+    public static HttpServletRequest getHttpServletRequest(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes())
+                .getRequest();
+        return request;
+    }
+
 }

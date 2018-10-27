@@ -15,6 +15,8 @@ public interface GiftRecordMapper {
 
     List<GiftRecord> selectByWorksId(String worksId);
 
+    GiftRecord selectByOutTradeNo(String outTradeNo);
+
     int updateByPrimaryKeySelective(GiftRecord record);
 
     int updateByPrimaryKey(GiftRecord record);
