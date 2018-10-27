@@ -2,11 +2,9 @@ package com.weixin.yixing.serviceImpl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
+import com.weixin.yixing.config.RedisUtil;
 import com.weixin.yixing.constants.Constants;
-import com.weixin.yixing.dao.GiftRecordMapper;
-import com.weixin.yixing.dao.TypeOfGiftMapper;
-import com.weixin.yixing.dao.WeChatUserMapper;
-import com.weixin.yixing.dao.WorksInfoMapper;
+import com.weixin.yixing.dao.*;
 import com.weixin.yixing.entity.*;
 import com.weixin.yixing.utils.HttpClientUtil;
 import com.weixin.yixing.utils.MD5Util;
@@ -53,6 +51,9 @@ public class WeChatPayServiceImpl {
 
     @Autowired
     private WeChatUserMapper weChatUserMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
     /**
      * @author
      * @version 创建时间：2017年1月21日 下午4:59:03
@@ -67,26 +68,9 @@ public class WeChatPayServiceImpl {
     public ResultContent weChatPay(String openid, HttpServletRequest request, String giftId, String worksId, String token) throws Exception {
         logger.info("开始礼物赠送支付: "+"openid-"+ openid+", giftId-"+ giftId + ", worksId-"+ worksId + ", token-" + token);
 
-        GiftRecord giftRecord = new GiftRecord();
-        giftRecord.setGiftId(Integer.valueOf(giftId));
-        giftRecord.setPresenterId(openid);
-        WeChatUser weChatUser = weChatUserMapper.findByOpenid(openid);
-        giftRecord.setPresenterName(weChatUser.getNickName());
-        giftRecord.setWorkId(worksId);
-        giftRecord.setCreateTime(new Date());
-        giftRecord.setModifyTime(new Date());
-
         TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(Integer.valueOf(giftId));
         Integer valueOfGift = typeOfGift.getValueOfGift();
         String nameOfGift = typeOfGift.getTypeName();
-
-        Integer voteOfGift = typeOfGift.getVoteOfGift();
-        WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
-        Integer sum = voteOfGift + worksInfo.getNumberOfVotes();
-        WorksInfo newWorksInfo = new WorksInfo();
-        newWorksInfo.setWorksUuid(worksId);
-        newWorksInfo.setNumberOfVotes(sum);
-
 
         String total_fee = String.valueOf(valueOfGift);
         String mch_id = "1515160931";//商户号
@@ -96,7 +80,10 @@ public class WeChatPayServiceImpl {
         String today = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String code = PayUtils.createCode(8);
         String out_trade_no = today + code;//商户订单号
-        giftRecord.setOutTradeNo(out_trade_no);
+
+        redisUtil.set("worksId", worksId, 300L);
+        redisUtil.set("giftId", giftId, 300L);
+
         String spbill_create_ip = PayUtils.getIpAddr(request);//终端IP  PayUtils.getIpAddr(request)
         String notify_url = "https://www.qingheyixing.com/wxNotify";//通知地址
         String trade_type = "JSAPI";//交易类型
@@ -187,8 +174,6 @@ public class WeChatPayServiceImpl {
             String paySign = PayUtils.sign(stringSignTemp, key, "utf-8").toUpperCase();
             jsonObject.put("paySign", paySign);
             jsonObject.put("openid", openid);
-            int workResult = worksInfoMapper.updateByPrimaryKeySelective(newWorksInfo);
-            int giftResult = giftRecordMapper.insert(giftRecord);
 //            jsonArray.add(jsonObject);
         }
         return new ResultContent(Constants.REQUEST_SUCCESS, map.get("return_msg"), jsonObject);
@@ -199,8 +184,6 @@ public class WeChatPayServiceImpl {
      * @return
      * @throws Exception
      */
-//    @RequestMapping(value="/wxNotify")
-//    @ResponseBody
     public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         logger.info("开始微信支付回调");
@@ -229,8 +212,10 @@ public class WeChatPayServiceImpl {
                 /**此处添加自己的业务逻辑代码start**/
                 String fee = (String)map.get("total_fee");
                 String outTradeNo = (String)map.get("out_trade_no");
-                GiftRecord giftRecord = giftRecordMapper.selectByOutTradeNo(outTradeNo);
-                Integer giftId = giftRecord.getGiftId();
+                String openid = (String)map.get("openid");
+                System.out.println(openid);
+                System.out.println((String)redisUtil.get("giftId"));
+                Integer giftId = (Integer) (redisUtil.get("giftId"));
                 TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(Integer.valueOf(giftId));
                 Integer valueOfGift = typeOfGift.getValueOfGift();
                 String money = String.valueOf(valueOfGift);
@@ -238,6 +223,9 @@ public class WeChatPayServiceImpl {
                     //通知微信服务器已经支付成功
                     resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                             + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+                    System.out.println((String)redisUtil.get("worksId"));
+
+                    Boolean result = addGift(String.valueOf(giftId), openid,(String)redisUtil.get("worksId"), outTradeNo);
                 }else{
                     resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
                             + "<return_msg><![CDATA[金额错误]]></return_msg>" + "</xml> ";
@@ -255,6 +243,35 @@ public class WeChatPayServiceImpl {
         out.write(resXml.getBytes());
         out.flush();
         out.close();
+    }
+
+    private Boolean addGift(String giftId, String presenterId, String worksId, String out_trade_no){
+        logger.info("开始赠送礼物");
+        GiftRecord giftRecord = new GiftRecord();
+        giftRecord.setGiftId(Integer.valueOf(giftId));
+        giftRecord.setPresenterId(presenterId);
+        WeChatUser weChatUser = weChatUserMapper.findByOpenid(presenterId);
+        giftRecord.setPresenterName(weChatUser.getNickName());
+        giftRecord.setWorkId(worksId);
+        giftRecord.setCreateTime(new Date());
+        giftRecord.setModifyTime(new Date());
+        giftRecord.setOutTradeNo(out_trade_no);
+
+        //更新作品票数
+        TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(Integer.valueOf(giftId));
+        Integer voteOfGift = typeOfGift.getVoteOfGift();
+        WorksInfo worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+        Integer sum = voteOfGift + worksInfo.getNumberOfVotes();
+        WorksInfo newWorksInfo = new WorksInfo();
+        newWorksInfo.setWorksUuid(worksId);
+        newWorksInfo.setNumberOfVotes(sum);
+        int workResult = worksInfoMapper.updateByPrimaryKeySelective(newWorksInfo);
+        int result = giftRecordMapper.insert(giftRecord);
+        if (result>0 && workResult>0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

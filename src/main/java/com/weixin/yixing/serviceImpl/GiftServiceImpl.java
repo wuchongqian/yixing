@@ -42,20 +42,22 @@ public class GiftServiceImpl {
      * 赠送礼物
      * @param giftId
      * @param presenterId
-     * @param presenterName
+     * @param out_trade_no
      * @param worksId
      * @param token
      * @return
      */
-    public ResultContent addGift(String giftId, String presenterId, String presenterName, String worksId, String token){
+    public ResultContent addGift(String giftId, String presenterId, String worksId, String out_trade_no,String token){
         logger.info("开始赠送礼物");
         GiftRecord giftRecord = new GiftRecord();
         giftRecord.setGiftId(Integer.valueOf(giftId));
         giftRecord.setPresenterId(presenterId);
-        giftRecord.setPresenterName(presenterName);
+        WeChatUser weChatUser = weChatUserMapper.findByOpenid(presenterId);
+        giftRecord.setPresenterName(weChatUser.getNickName());
         giftRecord.setWorkId(worksId);
         giftRecord.setCreateTime(new Date());
         giftRecord.setModifyTime(new Date());
+        giftRecord.setOutTradeNo(out_trade_no);
 
         //更新作品票数
         TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(Integer.valueOf(giftId));
@@ -91,7 +93,7 @@ public class GiftServiceImpl {
         Page<GiftRecord> page=PageHelper.startPage(Integer.valueOf(pageNum), Integer.valueOf(pageSize)).doSelectPage(()->giftRecordMapper.selectByWorksId(worksId));
         List<GiftRecord> giftRecords = page.getResult();
         List<Map<String, Object>> giftTrackList = new ArrayList<>();
-        Integer sum = 0;
+
         if(giftRecords.size()> 0){
             for (GiftRecord giftRecord: giftRecords){
                 Map<String, Object> map = new HashMap();
@@ -104,13 +106,17 @@ public class GiftServiceImpl {
                 TypeOfGift typeOfGift =typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
                 map.put("giftName",typeOfGift.getTypeName());
                 map.put("voteOfGift",typeOfGift.getVoteOfGift());
-                sum = sum + typeOfGift.getVoteOfGift();
                 giftTrackList.add(map);
             }
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("giftTrackList",giftTrackList);
-//        WorksInfo  worksInfo = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+        List<GiftRecord>  giftRecordList = giftRecordMapper.selectByWorksId(worksId);
+        Integer sum = 0;
+        for(GiftRecord giftRecord: giftRecordList){
+            TypeOfGift typeOfGift =typeOfGiftMapper.selectByPrimaryKey(giftRecord.getGiftId());
+            sum = sum + typeOfGift.getVoteOfGift();
+        }
         jsonObject.put("vote",sum);
 
         return new ResultPage(ResultContent.CODE_SUCCESS, Constants.SUCCESS, jsonObject,
