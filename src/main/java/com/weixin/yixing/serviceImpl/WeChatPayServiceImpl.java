@@ -199,9 +199,11 @@ public class WeChatPayServiceImpl {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/wxNotify")
-    @ResponseBody
+//    @RequestMapping(value="/wxNotify")
+//    @ResponseBody
     public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+        logger.info("开始微信支付回调");
         BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream)request.getInputStream()));
         String line = null;
         StringBuilder sb = new StringBuilder();
@@ -253,13 +255,6 @@ public class WeChatPayServiceImpl {
         out.write(resXml.getBytes());
         out.flush();
         out.close();
-    }
-
-    public static HttpServletRequest getHttpServletRequest(){
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-                .getRequestAttributes())
-                .getRequest();
-        return request;
     }
 
 }

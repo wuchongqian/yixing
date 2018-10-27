@@ -88,12 +88,12 @@ public class AccountController {
         return weChatPayServiceImpl.weChatPay(openid, request, giftId, worksId, token);
     }
 
-//    @ApiOperation(value="微信支付回调", notes="微信回调")
-//    @ApiImplicitParams({
-//    })
-//    @RequestMapping(value = "/wxNotify", method = {RequestMethod.POST})
-//    public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
-//       weChatPayServiceImpl.wxNotify(request,response);
-//    }
+    @ApiOperation(value="微信支付回调", notes="微信回调")
+    @ApiImplicitParams({
+    })
+    @RequestMapping(value = "/wxNotify", method = {RequestMethod.POST,RequestMethod.GET})
+    public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception{
+       weChatPayServiceImpl.wxNotify(request,response);
+    }
 
 }
