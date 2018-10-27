@@ -332,6 +332,7 @@ public class HttpClientUtil {
             // 设置请求方式（GET/POST）
             conn.setRequestMethod(requestMethod);
             conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+//            conn.setRequestProperty("charset","utf-8");
             // 当outputStr不为null时向输出流写数据
             if (null != outputStr) {
                 OutputStream outputStream = conn.getOutputStream();
