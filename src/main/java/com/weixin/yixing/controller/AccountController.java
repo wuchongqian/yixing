@@ -83,6 +83,7 @@ public class AccountController {
 //            @ApiImplicitParam(paramType="query", name = "request", value = "请求", required = true, dataType = "HttpServletRequest"),
             @ApiImplicitParam(paramType="query", name = "token", value = "通讯密串", required = true, dataType = "String"),
     })
+    @LoginRequired
     @RequestMapping(value = "/weChatPay", method = {RequestMethod.POST})
     public ResultContent weChatPay(String openid, HttpServletRequest request,String giftId, String worksId, String token) throws Exception{
         return weChatPayServiceImpl.weChatPay(openid, request, giftId, worksId, token);

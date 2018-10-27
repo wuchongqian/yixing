@@ -215,7 +215,7 @@ public class WeChatPayServiceImpl {
                 String openid = (String)map.get("openid");
                 System.out.println(openid);
                 System.out.println((String)redisUtil.get("giftId"));
-                Integer giftId = (Integer) (redisUtil.get("giftId"));
+                String giftId = (String) (redisUtil.get("giftId"));
                 TypeOfGift typeOfGift = typeOfGiftMapper.selectByPrimaryKey(Integer.valueOf(giftId));
                 Integer valueOfGift = typeOfGift.getValueOfGift();
                 String money = String.valueOf(valueOfGift);
