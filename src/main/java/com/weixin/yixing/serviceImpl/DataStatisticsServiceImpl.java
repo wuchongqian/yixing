@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.commons.utils.ResultContent;
 import com.weixin.yixing.config.RedisUtil;
 import com.weixin.yixing.constants.Constants;
+import com.weixin.yixing.dao.AdMapper;
 import com.weixin.yixing.dao.AuthorInfoMapper;
 import com.weixin.yixing.dao.WorksInfoMapper;
 import com.weixin.yixing.utils.HttpClientUtil;
@@ -26,6 +27,9 @@ public class DataStatisticsServiceImpl {
 
     @Autowired
     private AuthorInfoMapper authorInfoMapper;
+
+    @Autowired
+    private AdMapper adMapper;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -51,10 +55,13 @@ public class DataStatisticsServiceImpl {
 
         int numOfVotes = worksInfoMapper.getSumOfVotes(activityId);//查询总票数
 
+        int numOfAdClicks = adMapper.selectNumOfClicks();
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("numOfWorks", numOfWorks);
         jsonObject.put("numOfAuthor", numOfAuthor);
         jsonObject.put("numOfVotes", numOfVotes);
+        jsonObject.put("numOfAdClicks", numOfAdClicks);
         return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, jsonObject);
     }
 

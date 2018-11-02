@@ -122,6 +122,19 @@ public class WorksController {
         return worksServiceImpl.addNumOfVotesOnce(openId,worksId, token);
     }
 
+    @ApiOperation(value="点击广告", notes="点击广告")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType="query", name = "openId", value = "微信用户ID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType="query", name = "adUrl", value = "广告url", required = false, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "token", value = "通讯密串", required = true, dataType = "String")
+    })
+    @LoginRequired
+    @RequestMapping(value = "/viewAds", method = {RequestMethod.POST})
+    public ResultContent viewAds(String openId,String worksId, String adUrl, String token) {
+        return worksServiceImpl.viewAds(openId,worksId,adUrl, token);
+    }
+
     @ApiOperation(value="查询作品详情", notes="查询作品详情")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType="query", name = "worksId", value = "作品UUID", required = true, dataType = "String"),

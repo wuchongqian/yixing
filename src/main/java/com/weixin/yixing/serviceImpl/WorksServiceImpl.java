@@ -57,6 +57,9 @@ public class WorksServiceImpl {
     private AuthorWorksMapper authorWorksMapper;
 
     @Autowired
+    private AdMapper adMapper;
+
+    @Autowired
     private RedisUtil redisUtil;
 
     @Value("${appid}")
@@ -384,6 +387,54 @@ public class WorksServiceImpl {
         worksInfo.setModifyTime(new Date());
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
         if (result > 0) {
+            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+        } else {
+            return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
+        }
+    }
+
+    /**
+     * 点击广告
+     *
+     * @param worksId
+     * @param token
+     * @return
+     */
+    public ResultContent viewAds(String openId,String worksId, String adUrl, String token) {
+        logger.info("开始点击广告, " +"openid: " + openId + ", worksId: " + worksId + ", adUrl: "+ adUrl);
+
+        //查询作品得票数
+        WorksInfo works = worksInfoMapper.selectWorksInfoByWorksId(worksId);
+        WorksInfo worksInfo = new WorksInfo();
+        worksInfo.setWorksUuid(worksId);
+        worksInfo.setNumberOfVotes(works.getNumberOfVotes() + 1);
+        worksInfo.setModifyTime(new Date());
+
+        //增加广告点击数
+        int adResult = 0;
+        Map<String, Object> map = new HashMap<>();
+        map.put("openid", openId);
+        map.put("worksid", worksId);
+        Ad ad = adMapper.selectByOpenIdAndWorksId(map);
+        if (null == ad){
+            Ad record = new Ad();
+            record.setCreateTime(new Date());
+            record.setOpenid(openId);
+            record.setWorksid(worksId);
+            record.setAdUrl(adUrl);
+            record.setNumOfClicks(1);
+            record.setModifyTime(new Date());
+            adResult = adMapper.insertSelective(record);
+        }else{
+            Ad record = new Ad();
+            record.setId(ad.getId());
+            record.setNumOfClicks(1 + ad.getNumOfClicks());
+            record.setModifyTime(new Date());
+            adResult = adMapper.updateByPrimaryKeySelective(record);
+        }
+
+        int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
+        if (result > 0 && adResult >0) {
             return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
         } else {
             return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
