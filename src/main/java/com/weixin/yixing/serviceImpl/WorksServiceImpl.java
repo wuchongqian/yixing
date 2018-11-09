@@ -435,7 +435,7 @@ public class WorksServiceImpl {
 
         int result = worksInfoMapper.updateByPrimaryKeySelective(worksInfo);
         if (result > 0 && adResult >0) {
-            return new ResultContent(Constants.REQUEST_SUCCESS, Constants.SUCCESS, new JSONObject());
+            return new ResultContent(Constants.REQUEST_SUCCESS, "投票成功，谢谢观看！", new JSONObject());
         } else {
             return new ResultContent(Constants.REQUEST_FAILED, Constants.FAILED, new JSONObject());
         }
